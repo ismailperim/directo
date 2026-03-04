@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directo - Service Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🧭 Directo</h1>
+        <p class="tagline">Navigate your services</p>
+      </div>
+      <div class="header-actions">
+        <select id="viewMode" class="view-selector">
+          <option value="environment">By Environment</option>
+          <option value="project">By Project</option>
+          <option value="team">By Team</option>
+        </select>
+        <button id="reloadBtn" class="btn-icon" title="Reload configuration">
+          🔄
+        </button>
+        <button id="settingsBtn" class="btn-icon" title="Settings">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading services...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error" style="display: none;">
+      <p id="errorMessage"></p>
+      <button onclick="location.reload()">Retry</button>
+    </div>
+
+    <!-- Main Content -->
+    <main id="content" class="content" style="display: none;">
+      <!-- Services will be rendered here -->
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="modal-close" onclick="closeSettings()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label>Theme</label>
+          <select id="themeSelect">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>Default View</label>
+          <select id="defaultViewSelect">
+            <option value="environment">Environment</option>
+            <option value="project">Project</option>
+            <option value="team">Team</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="compactMode">
+            Compact mode
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeSettings()" class="btn-secondary">Cancel</button>
+        <button onclick="saveSettings()" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

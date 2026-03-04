@@ -1,30 +1,50 @@
 import 'dotenv/config';
 import express from 'express';
+import path from 'path';
 import { logger } from './utils/logger';
 import { healthRouter } from './api/health';
+import { createServicesRouter } from './api/services';
+import { ConfigLoader } from './core/config-loader';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SERVICES_CONFIG = process.env.SERVICES_CONFIG || './services.yml';
+
+// Initialize config loader
+const configLoader = new ConfigLoader(SERVICES_CONFIG);
+
+// Load configuration on startup
+try {
+  configLoader.load();
+  logger.info('Configuration loaded successfully');
+} catch (error) {
+  logger.error('Failed to load configuration:', error);
+  logger.warn('Starting server anyway - configuration can be loaded later');
+}
 
 // Middleware
 app.use(express.json());
 
 // Request logging
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   logger.info(`${req.method} ${req.path}`);
   next();
 });
 
-// Routes
-app.use('/health', healthRouter);
+// Serve static files (frontend)
+app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/', (req, res) => {
-  res.json({
-    name: 'Directo',
-    version: '0.1.0',
-    status: 'running',
-    description: 'Navigate your organization\'s knowledge graph',
-  });
+// API Routes
+app.use('/health', healthRouter);
+app.use('/api/services', createServicesRouter(configLoader));
+
+// Catch-all: serve index.html for SPA routing
+app.get('*', (req, res, next) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  } else {
+    next();
+  }
 });
 
 // Start server
