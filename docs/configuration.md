@@ -4,17 +4,16 @@ Directo uses a YAML configuration file to define services, links, and health che
 
 ## Quick Start
 
-1. **Copy the example configuration:**
-   ```bash
-   cp services.example.yml services.yml
-   ```
+1. **Review the included services.yml** - It contains generic examples to get you started
 
-2. **Edit services.yml** with your services and links
+2. **Customize services.yml** with your own services and links
 
 3. **Copy environment template:**
    ```bash
    cp .env.example .env
    ```
+   
+4. **Edit .env** if needed (optional - defaults work fine)
 
 ## Environment Variables (.env)
 

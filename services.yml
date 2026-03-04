@@ -1,0 +1,252 @@
+version: "1.0"
+
+# Global settings
+settings:
+  default_view: environment
+  theme: auto
+  health_check:
+    enabled: true
+    interval: 300
+    timeout: 5
+
+# Service definitions
+services:
+  - id: api-gateway
+    name: API Gateway
+    description: Main API gateway for microservices
+    icon: 🌐
+    tags:
+      - api
+      - gateway
+      - critical
+    team: platform
+    repository: https://github.com/example/api-gateway
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: API Endpoint
+            url: https://api.example.com
+            icon: 🔗
+            health_check: true
+            
+          - name: API Docs
+            url: https://api.example.com/docs
+            icon: 📖
+            
+          - name: Grafana Dashboard
+            url: https://grafana.example.com/d/api-gateway
+            icon: 📊
+            
+          - name: Logs
+            url: https://logs.example.com/api-gateway
+            icon: 📜
+      
+      - label: Staging
+        environment: staging
+        items:
+          - name: API Endpoint
+            url: https://api.staging.example.com
+            icon: 🔗
+            health_check: true
+          
+          - name: API Docs
+            url: https://api.staging.example.com/docs
+            icon: 📖
+      
+      - label: Development
+        environment: dev
+        items:
+          - name: Local API
+            url: http://localhost:3000
+            icon: 🔗
+            health_check:
+              enabled: true
+              mode: client-side
+
+  - id: web-app
+    name: Web Application
+    description: Main customer-facing web application
+    icon: 💻
+    tags:
+      - frontend
+      - webapp
+      - critical
+    team: frontend
+    repository: https://github.com/example/web-app
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: Website
+            url: https://www.example.com
+            icon: 🌍
+            health_check: true
+          
+          - name: Admin Panel
+            url: https://admin.example.com
+            icon: ⚙️
+          
+          - name: Analytics
+            url: https://analytics.example.com
+            icon: 📈
+      
+      - label: Staging
+        environment: staging
+        items:
+          - name: Website
+            url: https://staging.example.com
+            icon: 🌍
+            health_check: true
+      
+      - label: Development
+        environment: dev
+        items:
+          - name: Local Dev
+            url: http://localhost:8080
+            icon: 🌍
+            health_check:
+              enabled: true
+              mode: client-side
+
+  - id: user-service
+    name: User Service
+    description: User authentication and profile management
+    icon: 👤
+    tags:
+      - microservice
+      - backend
+      - auth
+    team: backend
+    repository: https://github.com/example/user-service
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: API
+            url: https://users.api.example.com
+            icon: 🔗
+            health_check:
+              enabled: true
+              url: https://users.api.example.com/health
+              expected_status: 200
+          
+          - name: Swagger
+            url: https://users.api.example.com/swagger
+            icon: 📖
+          
+          - name: Metrics
+            url: https://grafana.example.com/d/user-service
+            icon: 📊
+      
+      - label: Staging
+        environment: staging
+        items:
+          - name: API
+            url: https://users.api.staging.example.com
+            icon: 🔗
+            health_check: true
+
+  - id: redis
+    name: Redis Cache
+    description: Primary caching layer
+    icon: 🔴
+    tags:
+      - infrastructure
+      - cache
+      - critical
+    team: platform
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: Redis Commander
+            url: https://redis.example.com
+            icon: 🔍
+            health_check: false
+          
+          - name: Monitoring
+            url: https://grafana.example.com/d/redis-prod
+            icon: 📊
+
+  - id: postgres
+    name: PostgreSQL Database
+    description: Main application database
+    icon: 🐘
+    tags:
+      - infrastructure
+      - database
+      - critical
+    team: platform
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: PgAdmin
+            url: https://pgadmin.example.com
+            icon: 🗄️
+            health_check: false
+          
+          - name: Metrics
+            url: https://grafana.example.com/d/postgres-prod
+            icon: 📊
+
+  - id: monitoring
+    name: Monitoring Stack
+    description: Grafana, Prometheus, and alerting
+    icon: 📊
+    tags:
+      - monitoring
+      - infrastructure
+    team: platform
+    
+    links:
+      - label: Production
+        environment: production
+        items:
+          - name: Grafana
+            url: https://grafana.example.com
+            icon: 📊
+          
+          - name: Prometheus
+            url: https://prometheus.example.com
+            icon: 🔥
+          
+          - name: Alertmanager
+            url: https://alerts.example.com
+            icon: 🚨
+
+# Custom groupings
+groups:
+  - name: Core Services
+    type: project
+    services:
+      - api-gateway
+      - user-service
+      - web-app
+  
+  - name: Infrastructure
+    type: category
+    services:
+      - redis
+      - postgres
+      - monitoring
+  
+  - name: Platform Team
+    type: team
+    services:
+      - api-gateway
+      - redis
+      - postgres
+      - monitoring
+  
+  - name: Customer Facing
+    type: project
+    services:
+      - web-app
+      - api-gateway

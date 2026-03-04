@@ -14,9 +14,6 @@ build/
 .env.local
 .env.*.local
 
-# Configuration (may contain internal URLs/secrets)
-services.yml
-
 # IDE
 .vscode/
 .idea/

@@ -30,10 +30,11 @@ cd directo
 # Install dependencies
 npm install
 
-# Configure environment
+# Optional: Configure environment
 cp .env.example .env
-cp services.example.yml services.yml
-# Edit services.yml with your services and links
+
+# The included services.yml has working examples - try it first!
+# Then customize with your own services
 
 # Run with Docker
 docker-compose up -d
@@ -41,6 +42,8 @@ docker-compose up -d
 # Or run locally
 npm run dev
 ```
+
+Open http://localhost:3000 and explore the example services!
 
 ## Architecture
 
