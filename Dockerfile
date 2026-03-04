@@ -29,6 +29,12 @@ RUN npm ci --only=production
 # Copy built application
 COPY --from=builder /app/dist ./dist
 
+# Copy default configuration
+COPY --from=builder /app/services.yml ./services.yml
+
+# Copy public files
+COPY --from=builder /app/public ./public
+
 # Create non-root user
 RUN addgroup -g 1001 -S directo && \
     adduser -S directo -u 1001 && \

@@ -8,7 +8,7 @@ Directo organizes your services, environments, and operational links in one plac
 
 - 📋 **YAML Configuration** - Single source of truth in Git
 - 🎯 **Environment Grouping** - Production, UAT, Dev views
-- 💚 **Health Checks** - Monitor service availability
+- 💚 **Health Checks** - Detect dead/stale links automatically (never hunt for 404s in Confluence again!)
 - 🔄 **Multiple Views** - Group by environment, project, team, or custom
 - 🎨 **Client Preferences** - Hide/show services, favorites, dark mode
 - 🐳 **Docker Ready** - One-command deployment
@@ -16,11 +16,46 @@ Directo organizes your services, environments, and operational links in one plac
 ## Use Cases
 
 - **Service Discovery**: All your Swagger docs, dashboards, and tools in one place
-- **Incident Response**: Quick access to Grafana, Kibana, K8s dashboards
+- **Incident Response**: Quick access to Grafana, Kibana, K8s dashboards when seconds count
 - **Onboarding**: New team members see all relevant links immediately
 - **Multi-Environment**: Switch between prod/uat/dev views instantly
+- **Link Maintenance**: Automated health checks catch dead/stale links before your team wastes time clicking 6-year-old Confluence URLs
+
+## Why Directo?
+
+**The Problem**: You find a Confluence page with "helpful" links. Half are 404s. The Grafana dashboard moved. The API docs are outdated. You waste 15 minutes hunting for the right URL.
+
+**The Solution**: Directo health checks validate every link automatically. Dead links are flagged instantly. Your team always has working, up-to-date links.
 
 ## Quick Start
+
+### Using Docker (Recommended)
+
+```bash
+# Pull from GitHub Container Registry
+docker pull ghcr.io/ismailperim/directo:latest
+
+# Run with default config
+docker run -p 3000:3000 ghcr.io/ismailperim/directo:latest
+
+# Or run with custom config
+docker run -p 3000:3000 \
+  -v $(pwd)/services.yml:/app/services.yml \
+  ghcr.io/ismailperim/directo:latest
+```
+
+### Using Docker Compose
+
+```bash
+# Clone the repository
+git clone https://github.com/ismailperim/directo.git
+cd directo
+
+# Start the service
+docker-compose up -d
+```
+
+### Local Development
 
 ```bash
 # Clone the repository
@@ -36,10 +71,7 @@ cp .env.example .env
 # The included services.yml has working examples - try it first!
 # Then customize with your own services
 
-# Run with Docker
-docker-compose up -d
-
-# Or run locally
+# Run in development mode
 npm run dev
 ```
 
