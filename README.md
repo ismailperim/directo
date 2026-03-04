@@ -1,23 +1,24 @@
 # Directo
 
-**Navigate your organization's knowledge graph.**
+**Your central dashboard for all service links.**
 
-Directo helps you find the right person to talk to. It indexes your organization's communication channels, documents, and expertise to answer one simple question: *"Who should I ask about X?"*
+Directo organizes your services, environments, and operational links in one place. No more bookmark chaos - just a clean, YAML-configured dashboard with health checks and flexible grouping.
 
 ## Features
 
-- 🔍 **Semantic Search** - Find experts by topic, not just keywords
-- 🗺️ **Knowledge Graph** - Visualize expertise connections across your organization
-- 🤖 **AI-Powered** - Natural language queries: "Who knows about Kubernetes deployments?"
-- 🔐 **Privacy-First** - Self-hosted, zero external data sharing
+- 📋 **YAML Configuration** - Single source of truth in Git
+- 🎯 **Environment Grouping** - Production, UAT, Dev views
+- 💚 **Health Checks** - Monitor service availability
+- 🔄 **Multiple Views** - Group by environment, project, team, or custom
+- 🎨 **Client Preferences** - Hide/show services, favorites, dark mode
 - 🐳 **Docker Ready** - One-command deployment
 
 ## Use Cases
 
-- **Onboarding**: New hires find the right people instantly
-- **Cross-Team Collaboration**: Break down knowledge silos
-- **Incident Response**: Find the expert when seconds count
-- **Process Discovery**: "Who handles visa applications?"
+- **Service Discovery**: All your Swagger docs, dashboards, and tools in one place
+- **Incident Response**: Quick access to Grafana, Kibana, K8s dashboards
+- **Onboarding**: New team members see all relevant links immediately
+- **Multi-Environment**: Switch between prod/uat/dev views instantly
 
 ## Quick Start
 
@@ -31,7 +32,8 @@ npm install
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your settings
+cp services.example.yml services.yml
+# Edit services.yml with your services and links
 
 # Run with Docker
 docker-compose up -d
@@ -44,10 +46,10 @@ npm run dev
 
 Directo consists of:
 
-1. **Indexer** - Crawls configured data sources (Slack, wikis, git commits)
-2. **AI Engine** - Embeds content and queries for semantic search
-3. **API Server** - REST API for queries and data management
-4. **Web UI** - Simple query interface
+1. **Config Parser** - Reads YAML service definitions
+2. **Health Check Engine** - Monitors service availability
+3. **API Server** - REST API for service data and health status
+4. **Web UI** - Dashboard with multiple view modes
 
 ## Configuration
 
@@ -79,12 +81,14 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Roadmap
 
-- [ ] Slack integration
-- [ ] Microsoft Teams support
-- [ ] Confluence/Notion indexing
-- [ ] Graph visualization UI
-- [ ] Multi-language support
-- [ ] LDAP/Active Directory integration
+- [ ] YAML config parser
+- [ ] Health check engine (server-side)
+- [ ] Client-side health checks
+- [ ] Environment/project/team view modes
+- [ ] Client preferences (local storage)
+- [ ] Dark mode support
+- [ ] Prometheus/Grafana integration for health status
+- [ ] LDAP/SSO authentication
 
 ---
 
