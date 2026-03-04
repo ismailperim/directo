@@ -23,6 +23,9 @@
           <option value="project">By Project</option>
           <option value="team">By Team</option>
         </select>
+        <button id="filterBtn" class="btn-icon" title="Filters">
+          🔍
+        </button>
         <button id="reloadBtn" class="btn-icon" title="Reload configuration">
           🔄
         </button>
@@ -48,6 +51,39 @@
     <main id="content" class="content" style="display: none;">
       <!-- Services will be rendered here -->
     </main>
+  </div>
+
+  <!-- Filter Modal -->
+  <div id="filterModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Filters</h2>
+        <button class="modal-close" onclick="closeFilters()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label>Environments</label>
+          <div id="environmentFilters" class="checkbox-group"></div>
+        </div>
+        <div class="setting-group">
+          <label>Teams</label>
+          <div id="teamFilters" class="checkbox-group"></div>
+        </div>
+        <div class="setting-group">
+          <label>Tags</label>
+          <div id="tagFilters" class="checkbox-group"></div>
+        </div>
+        <div class="setting-group">
+          <label>Services</label>
+          <div id="serviceFilters" class="checkbox-group"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick="clearFilters()" class="btn-secondary">Clear All</button>
+        <button onclick="closeFilters()" class="btn-secondary">Cancel</button>
+        <button onclick="applyFilters()" class="btn-primary">Apply</button>
+      </div>
+    </div>
   </div>
 
   <!-- Settings Modal -->

@@ -4,14 +4,18 @@ import path from 'path';
 import { logger } from './utils/logger';
 import { healthRouter } from './api/health';
 import { createServicesRouter } from './api/services';
+import { createHealthCheckRouter } from './api/health-check';
 import { ConfigLoader } from './core/config-loader';
+import { HealthChecker } from './core/health-checker';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SERVICES_CONFIG = process.env.SERVICES_CONFIG || './services.yml';
+const HEALTH_CACHE_TTL = parseInt(process.env.HEALTH_CACHE_TTL || '300', 10);
 
-// Initialize config loader
+// Initialize config loader and health checker
 const configLoader = new ConfigLoader(SERVICES_CONFIG);
+const healthChecker = new HealthChecker(HEALTH_CACHE_TTL);
 
 // Load configuration on startup
 try {
@@ -37,6 +41,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // API Routes
 app.use('/health', healthRouter);
 app.use('/api/services', createServicesRouter(configLoader));
+app.use('/api/health-check', createHealthCheckRouter(configLoader, healthChecker));
 
 // Catch-all: serve index.html for SPA routing
 app.get('*', (req, res, next) => {

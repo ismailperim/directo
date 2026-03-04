@@ -4,6 +4,13 @@ let environments = [];
 let groups = [];
 let settings = {};
 let currentView = 'environment';
+let healthResults = new Map(); // Map of "serviceId:groupIdx:linkIdx" -> health result
+let activeFilters = {
+  environments: [],
+  teams: [],
+  tags: [],
+  services: []
+};
 
 // Load preferences from localStorage
 function loadPreferences() {
@@ -16,6 +23,24 @@ function loadPreferences() {
     }
   }
   return {};
+}
+
+// Load filters from localStorage
+function loadFilters() {
+  const filters = localStorage.getItem('directo_filters');
+  if (filters) {
+    try {
+      return JSON.parse(filters);
+    } catch (e) {
+      return { environments: [], teams: [], tags: [], services: [] };
+    }
+  }
+  return { environments: [], teams: [], tags: [], services: [] };
+}
+
+// Save filters to localStorage
+function saveFilters(filters) {
+  localStorage.setItem('directo_filters', JSON.stringify(filters));
 }
 
 // Save preferences to localStorage
@@ -43,8 +68,9 @@ function applyTheme(theme) {
 // Initialize app
 async function init() {
   try {
-    // Load preferences
+    // Load preferences and filters
     const prefs = loadPreferences();
+    activeFilters = loadFilters();
     currentView = prefs.defaultView || 'environment';
     document.getElementById('viewMode').value = currentView;
 
@@ -61,6 +87,9 @@ async function init() {
 
     // Render
     render();
+
+    // Fetch health checks in background
+    fetchHealthChecks();
 
     // Hide loading, show content
     document.getElementById('loading').style.display = 'none';
@@ -135,9 +164,13 @@ function renderEnvironmentView() {
   const content = document.getElementById('content');
 
   environments.forEach(env => {
-    const envServices = services.filter(service =>
+    // Filter by environment first
+    let envServices = services.filter(service =>
       service.links.some(group => group.environment === env)
     );
+    
+    // Apply active filters
+    envServices = filterServices(envServices);
 
     if (envServices.length === 0) return;
 
@@ -183,7 +216,10 @@ function renderProjectView() {
   }
 
   groups.forEach(group => {
-    const groupServices = services.filter(s => group.services.includes(s.id));
+    let groupServices = services.filter(s => group.services.includes(s.id));
+    
+    // Apply active filters
+    groupServices = filterServices(groupServices);
 
     if (groupServices.length === 0) return;
 
@@ -216,9 +252,12 @@ function renderProjectView() {
 function renderTeamView() {
   const content = document.getElementById('content');
 
-  // Group services by team
+  // Apply filters first
+  const filteredServices = filterServices(services);
+
+  // Group filtered services by team
   const teams = {};
-  services.forEach(service => {
+  filteredServices.forEach(service => {
     const team = service.team || 'Unassigned';
     if (!teams[team]) teams[team] = [];
     teams[team].push(service);
@@ -306,8 +345,8 @@ function renderServiceCard(service, environment) {
     ? service.links.filter(g => g.environment === environment)
     : service.links;
 
-  linkGroups.forEach(group => {
-    group.items.forEach(item => {
+  linkGroups.forEach((group, groupIdx) => {
+    group.items.forEach((item, itemIdx) => {
       const link = document.createElement('a');
       link.href = item.url;
       link.target = '_blank';
@@ -326,11 +365,28 @@ function renderServiceCard(service, environment) {
       linkName.textContent = item.name;
       link.appendChild(linkName);
 
-      // Health indicator (placeholder for now)
+      // Health indicator
       if (item.health_check) {
         const health = document.createElement('span');
-        health.className = 'health-indicator unknown';
-        health.title = 'Health status unknown';
+        health.dataset.serviceId = service.id;
+        health.dataset.groupIdx = groupIdx;
+        health.dataset.linkIdx = itemIdx;
+        
+        const key = `${service.id}:${groupIdx}:${itemIdx}`;
+        const result = healthResults.get(key);
+        
+        if (result) {
+          health.className = 'health-indicator ' + result.status;
+          let title = `Status: ${result.status}`;
+          if (result.latencyMs) title += ` (${result.latencyMs}ms)`;
+          if (result.statusCode) title += ` - HTTP ${result.statusCode}`;
+          if (result.error) title += ` - ${result.error}`;
+          health.title = title;
+        } else {
+          health.className = 'health-indicator checking';
+          health.title = 'Checking health...';
+        }
+        
         link.appendChild(health);
       }
 
@@ -404,6 +460,266 @@ function saveSettings() {
 document.getElementById('settingsModal').addEventListener('click', (e) => {
   if (e.target.id === 'settingsModal') {
     closeSettings();
+  }
+});
+
+// Fetch health checks for all enabled links
+async function fetchHealthChecks() {
+  const checks = [];
+  
+  services.forEach((service, serviceIdx) => {
+    service.links.forEach((linkGroup, groupIdx) => {
+      linkGroup.items.forEach((item, itemIdx) => {
+        if (item.health_check) {
+          checks.push({
+            serviceId: service.id,
+            linkGroupIndex: groupIdx,
+            linkIndex: itemIdx,
+          });
+        }
+      });
+    });
+  });
+
+  if (checks.length === 0) return;
+
+  try {
+    const response = await fetch('/api/health-check/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ checks }),
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch health checks');
+      return;
+    }
+
+    const data = await response.json();
+    
+    // Store results
+    data.results.forEach((result) => {
+      const key = `${result.serviceId}:${result.linkGroupIndex}:${result.linkIndex}`;
+      healthResults.set(key, result.result);
+    });
+
+    // Update UI
+    updateHealthIndicators();
+  } catch (error) {
+    console.error('Error fetching health checks:', error);
+  }
+}
+
+// Update health indicators in UI
+function updateHealthIndicators() {
+  document.querySelectorAll('.health-indicator').forEach((indicator) => {
+    const serviceId = indicator.dataset.serviceId;
+    const groupIdx = indicator.dataset.groupIdx;
+    const linkIdx = indicator.dataset.linkIdx;
+    const key = `${serviceId}:${groupIdx}:${linkIdx}`;
+    
+    const result = healthResults.get(key);
+    if (result) {
+      indicator.className = 'health-indicator ' + result.status;
+      
+      // Update title
+      let title = `Status: ${result.status}`;
+      if (result.latencyMs) {
+        title += ` (${result.latencyMs}ms)`;
+      }
+      if (result.statusCode) {
+        title += ` - HTTP ${result.statusCode}`;
+      }
+      if (result.error) {
+        title += ` - ${result.error}`;
+      }
+      indicator.title = title;
+    }
+  });
+}
+
+// Filter services based on active filters
+function filterServices(servicesToFilter) {
+  if (
+    activeFilters.environments.length === 0 &&
+    activeFilters.teams.length === 0 &&
+    activeFilters.tags.length === 0 &&
+    activeFilters.services.length === 0
+  ) {
+    return servicesToFilter; // No filters active
+  }
+
+  return servicesToFilter.filter((service) => {
+    // Service filter
+    if (activeFilters.services.length > 0) {
+      if (!activeFilters.services.includes(service.id)) {
+        return false;
+      }
+    }
+
+    // Team filter
+    if (activeFilters.teams.length > 0) {
+      if (!service.team || !activeFilters.teams.includes(service.team)) {
+        return false;
+      }
+    }
+
+    // Tag filter
+    if (activeFilters.tags.length > 0) {
+      if (!service.tags || !service.tags.some(tag => activeFilters.tags.includes(tag))) {
+        return false;
+      }
+    }
+
+    // Environment filter (check if service has any links in filtered environments)
+    if (activeFilters.environments.length > 0) {
+      const hasMatchingEnv = service.links.some(group =>
+        activeFilters.environments.includes(group.environment)
+      );
+      if (!hasMatchingEnv) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+// Get unique values for filters
+function getUniqueValues() {
+  const teams = new Set();
+  const tags = new Set();
+  
+  services.forEach(service => {
+    if (service.team) teams.add(service.team);
+    if (service.tags) service.tags.forEach(tag => tags.add(tag));
+  });
+  
+  return {
+    teams: Array.from(teams).sort(),
+    tags: Array.from(tags).sort(),
+  };
+}
+
+// Open filter modal
+function openFilters() {
+  const unique = getUniqueValues();
+  
+  // Populate environment filters
+  const envContainer = document.getElementById('environmentFilters');
+  envContainer.innerHTML = '';
+  environments.forEach(env => {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = env;
+    checkbox.checked = activeFilters.environments.includes(env);
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(env));
+    envContainer.appendChild(label);
+  });
+  
+  // Populate team filters
+  const teamContainer = document.getElementById('teamFilters');
+  teamContainer.innerHTML = '';
+  unique.teams.forEach(team => {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = team;
+    checkbox.checked = activeFilters.teams.includes(team);
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(team));
+    teamContainer.appendChild(label);
+  });
+  
+  // Populate tag filters
+  const tagContainer = document.getElementById('tagFilters');
+  tagContainer.innerHTML = '';
+  unique.tags.forEach(tag => {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = tag;
+    checkbox.checked = activeFilters.tags.includes(tag);
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(tag));
+    tagContainer.appendChild(label);
+  });
+  
+  // Populate service filters
+  const serviceContainer = document.getElementById('serviceFilters');
+  serviceContainer.innerHTML = '';
+  services.forEach(service => {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = service.id;
+    checkbox.checked = activeFilters.services.includes(service.id);
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(service.name));
+    serviceContainer.appendChild(label);
+  });
+  
+  document.getElementById('filterModal').style.display = 'flex';
+}
+
+function closeFilters() {
+  document.getElementById('filterModal').style.display = 'none';
+}
+
+function applyFilters() {
+  // Collect checked values
+  const newFilters = {
+    environments: [],
+    teams: [],
+    tags: [],
+    services: []
+  };
+  
+  document.querySelectorAll('#environmentFilters input:checked').forEach(cb => {
+    newFilters.environments.push(cb.value);
+  });
+  
+  document.querySelectorAll('#teamFilters input:checked').forEach(cb => {
+    newFilters.teams.push(cb.value);
+  });
+  
+  document.querySelectorAll('#tagFilters input:checked').forEach(cb => {
+    newFilters.tags.push(cb.value);
+  });
+  
+  document.querySelectorAll('#serviceFilters input:checked').forEach(cb => {
+    newFilters.services.push(cb.value);
+  });
+  
+  activeFilters = newFilters;
+  saveFilters(activeFilters);
+  render();
+  closeFilters();
+}
+
+function clearFilters() {
+  activeFilters = {
+    environments: [],
+    teams: [],
+    tags: [],
+    services: []
+  };
+  saveFilters(activeFilters);
+  render();
+  closeFilters();
+}
+
+// Filter button handler
+document.getElementById('filterBtn').addEventListener('click', () => {
+  openFilters();
+});
+
+// Close filter modal on outside click
+document.getElementById('filterModal').addEventListener('click', (e) => {
+  if (e.target.id === 'filterModal') {
+    closeFilters();
   }
 });
 
