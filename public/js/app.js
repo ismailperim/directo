@@ -148,8 +148,10 @@ function renderEnvironmentView() {
     header.className = 'environment-header';
 
     const badge = document.createElement('span');
-    badge.className = `environment-badge ${env}`;
-    badge.textContent = env;
+    // Map environment names to badge styles
+    const badgeClass = env === 'uat' ? 'staging' : env;
+    badge.className = `environment-badge ${badgeClass}`;
+    badge.textContent = env.toUpperCase();
     header.appendChild(badge);
 
     const title = document.createElement('h2');
