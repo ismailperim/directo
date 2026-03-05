@@ -1,24 +1,22 @@
 {
   "name": "directo",
   "version": "0.1.0",
-  "description": "Navigate your organization's knowledge graph",
-  "main": "dist/index.js",
+  "description": "Service link navigation dashboard",
+  "private": true,
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\""
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && NODE_ENV=production npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
   },
   "keywords": [
-    "knowledge-graph",
-    "organization",
-    "expert-finder",
-    "semantic-search",
-    "ai"
+    "service-dashboard",
+    "devops",
+    "navigation"
   ],
   "author": "İsmail Perim",
   "license": "MIT",
@@ -26,34 +24,10 @@
     "type": "git",
     "url": "https://github.com/ismailperim/directo.git"
   },
-  "bugs": {
-    "url": "https://github.com/ismailperim/directo/issues"
-  },
-  "homepage": "https://github.com/ismailperim/directo#readme",
   "engines": {
     "node": ">=18.0.0"
   },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "js-yaml": "^4.1.1",
-    "lucide-react": "^0.577.0",
-    "tailwind-merge": "^3.5.0",
-    "winston": "^3.11.0"
-  },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20.10.6",
-    "@typescript-eslint/eslint-plugin": "^6.16.0",
-    "@typescript-eslint/parser": "^6.16.0",
-    "autoprefixer": "^10.4.27",
-    "eslint": "^8.56.0",
-    "postcss": "^8.5.8",
-    "prettier": "^3.1.1",
-    "tailwindcss": "^4.2.1",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "concurrently": "^8.2.2"
   }
 }

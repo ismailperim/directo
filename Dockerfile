@@ -1,18 +1,35 @@
-# Build stage
-FROM node:20-alpine AS builder
+# Frontend build stage
+FROM node:20-alpine AS frontend-builder
 
-WORKDIR /app
+WORKDIR /app/frontend
 
-# Copy package files
-COPY package*.json ./
+# Copy frontend package files
+COPY frontend/package*.json ./
 
-# Install dependencies
+# Install frontend dependencies
 RUN npm ci
 
-# Copy source code
-COPY . .
+# Copy frontend source
+COPY frontend/ ./
 
-# Build TypeScript
+# Build frontend
+RUN npm run build
+
+# Backend build stage
+FROM node:20-alpine AS backend-builder
+
+WORKDIR /app/backend
+
+# Copy backend package files
+COPY backend/package*.json ./
+
+# Install backend dependencies
+RUN npm ci
+
+# Copy backend source
+COPY backend/ ./
+
+# Build backend TypeScript
 RUN npm run build
 
 # Production stage
@@ -20,20 +37,20 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy backend package files
+COPY backend/package*.json ./
 
-# Install production dependencies only
+# Install backend production dependencies only
 RUN npm ci --only=production
 
-# Copy built application
-COPY --from=builder /app/dist ./dist
+# Copy built backend
+COPY --from=backend-builder /app/backend/dist ./dist
 
-# Copy default configuration
-COPY --from=builder /app/services.yml ./services.yml
+# Copy built frontend
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-# Copy public files
-COPY --from=builder /app/public ./public
+# Copy services configuration
+COPY backend/services.yml ./services.yml
 
 # Create non-root user
 RUN addgroup -g 1001 -S directo && \
@@ -43,5 +60,7 @@ RUN addgroup -g 1001 -S directo && \
 USER directo
 
 EXPOSE 3000
+
+ENV NODE_ENV=production
 
 CMD ["node", "dist/index.js"]

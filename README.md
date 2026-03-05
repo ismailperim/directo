@@ -68,29 +68,61 @@ docker-compose up -d
 git clone https://github.com/ismailperim/directo.git
 cd directo
 
-# Install dependencies
-npm install
+# Install all dependencies (root + backend + frontend)
+npm run install:all
 
 # Optional: Configure environment
-cp .env.example .env
+cp backend/.env.example backend/.env
 
 # The included services.yml has working examples - try it first!
 # Then customize with your own services
 
-# Run in development mode
+# Run in development mode (starts both backend + frontend)
 npm run dev
 ```
 
-Open http://localhost:3000 and explore the example services!
+**Development URLs:**
+- **Frontend (React UI)**: http://localhost:5173 (Vite dev server with hot reload)
+- **Backend (API)**: http://localhost:3000 (Express API server)
+
+**Production Build:**
+```bash
+# Build everything (backend + frontend)
+npm run build
+
+# Start production server (serves frontend + API from single port)
+npm start
+```
+
+Open http://localhost:3000 in production mode (or http://localhost:5173 in dev mode) and explore the example services!
 
 ## Architecture
 
-Directo consists of:
+Directo is a **React + Express monolith** with clean separation:
 
-1. **Config Parser** - Reads YAML service definitions
-2. **Health Check Engine** - Monitors service availability
-3. **API Server** - REST API for service data and health status
-4. **Web UI** - Dashboard with multiple view modes
+```
+directo/
+├── backend/          # Express API server (TypeScript)
+│   ├── src/
+│   │   ├── api/      # REST endpoints
+│   │   ├── core/     # Config loader, health checker
+│   │   └── utils/    # Service normalizer, logger
+│   └── services.yml  # YAML service configuration
+├── frontend/         # React UI (TypeScript + Vite)
+│   └── src/
+│       ├── app/      # App component + views
+│       └── api/      # API client for backend
+└── Dockerfile        # Multi-stage build (frontend + backend)
+```
+
+**Components:**
+
+1. **YAML Config Loader** (backend) - Parses service definitions
+2. **Service Normalizer** (backend) - Transforms nested structure to flat UI format
+3. **Health Check Engine** (backend) - Monitors service availability
+4. **REST API** (backend) - `/api/services` endpoints
+5. **React Dashboard** (frontend) - Modern UI with filters, search, view modes
+6. **Vite Build** (frontend) - Optimized production bundle served by Express
 
 ## Configuration
 
