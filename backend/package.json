@@ -1,6 +1,6 @@
 {
   "name": "directo-backend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Directo API server",
   "main": "dist/index.js",
   "scripts": {
