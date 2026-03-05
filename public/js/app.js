@@ -391,7 +391,7 @@ function renderEnvironmentView() {
         <span class="inline-flex items-center justify-center rounded-md border ${colors.badge} px-3 py-1 text-sm font-semibold uppercase tracking-wider">
           ${env}
         </span>
-        <span class="text-sm text-muted-foreground">
+        <span class="text-sm opacity-50">
           ${envServices.length} ${envServices.length === 1 ? 'service' : 'services'}
         </span>
       </div>
@@ -425,7 +425,7 @@ function renderProjectView() {
     section.innerHTML = `
       <div class="flex items-center gap-3">
         <h2 class="text-xl font-semibold">${group.name}</h2>
-        <span class="text-sm text-muted-foreground">
+        <span class="text-sm opacity-50">
           ${groupServices.length} ${groupServices.length === 1 ? 'service' : 'services'}
         </span>
       </div>
@@ -457,7 +457,7 @@ function renderTeamView() {
     section.innerHTML = `
       <div class="flex items-center gap-3">
         <h2 class="text-xl font-semibold">${team}</h2>
-        <span class="text-sm text-muted-foreground">
+        <span class="text-sm opacity-50">
           ${teamServices.length} ${teamServices.length === 1 ? 'service' : 'services'}
         </span>
       </div>
@@ -519,7 +519,7 @@ function renderServiceCard(service, environment) {
           </div>
           <div class="flex-1 min-w-0">
             <h4 class="text-lg leading-none mb-1">${service.name}</h4>
-            ${service.description ? `<p class="text-sm text-muted-foreground mt-1">${service.description}</p>` : ''}
+            ${service.description ? `<p class="text-sm opacity-60 mt-1">${service.description}</p>` : ''}
           </div>
         </div>
 

@@ -48,7 +48,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: var(--font-size);
   background: var(--background);
   color: var(--foreground);
@@ -110,6 +110,17 @@ input, p {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
+}
+
+/* Select styling */
+select option {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.dark select option {
+  background: oklch(0.269 0 0);
+  color: oklch(0.985 0 0);
 }
 
 /* Animations */

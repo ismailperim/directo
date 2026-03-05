@@ -6,7 +6,7 @@
   <title>Directo - Service Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/theme.css">
   <style>
@@ -27,7 +27,7 @@
           </div>
           <div>
             <h1 class="text-2xl font-bold">Directo</h1>
-            <p class="text-sm text-muted-foreground">Navigate your services</p>
+            <p class="text-sm opacity-60">Navigate your services</p>
           </div>
         </div>
 
@@ -42,12 +42,12 @@
               type="text"
               id="searchInput"
               placeholder="Search services, projects, or tags..."
-              class="flex h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 pl-10 text-sm transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30"
+              class="flex h-9 w-full rounded-md border border-border bg-input-background px-3 py-1 pl-10 text-sm transition-all outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-muted dark:border-muted"
             />
           </div>
 
           <!-- View Mode -->
-          <select id="viewMode" class="flex h-9 items-center justify-between rounded-md border border-border bg-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 w-[180px]">
+          <select id="viewMode" class="flex h-9 items-center justify-between rounded-md border border-border bg-input-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 w-[180px] dark:bg-muted dark:border-muted appearance-none cursor-pointer">
             <option value="environment">By Environment</option>
             <option value="project">By Project</option>
             <option value="team">By Team</option>
@@ -76,14 +76,14 @@
   <div id="filterBar" class="border-b border-border bg-card/30 backdrop-blur-sm" style="display: none;">
     <div class="container mx-auto px-6 py-3">
       <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
+        <div class="flex items-center gap-2 text-sm opacity-60">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
           </svg>
           <span>Active Filters:</span>
         </div>
         <div id="activeFilters" class="flex items-center gap-2 flex-wrap"></div>
-        <button id="clearFiltersBtn" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <button id="clearFiltersBtn" class="text-sm opacity-60 hover:opacity-100 transition-opacity">
           Clear all
         </button>
       </div>
@@ -93,7 +93,7 @@
   <!-- Loading State -->
   <div id="loading" class="container mx-auto px-6 py-12 text-center">
     <div class="inline-block w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
-    <p class="mt-4 text-muted-foreground">Loading services...</p>
+    <p class="mt-4 opacity-60">Loading services...</p>
   </div>
 
   <!-- Error State -->
@@ -110,8 +110,8 @@
   </main>
 
   <!-- Filter Modal -->
-  <div id="filterModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center" style="display: none;">
-    <div class="bg-card border border-border rounded-xl w-full max-w-2xl mx-4 shadow-xl">
+  <div id="filterModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center" style="display: none;">
+    <div class="bg-background border border-border rounded-xl w-full max-w-2xl mx-4 shadow-2xl">
       <div class="flex items-center justify-between p-6 border-b border-border">
         <h2 class="text-xl font-semibold">Filters</h2>
         <button onclick="closeFilters()" class="p-2 hover:bg-accent rounded-lg transition-colors">
@@ -153,8 +153,8 @@
   </div>
 
   <!-- Settings Modal -->
-  <div id="settingsModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center" style="display: none;">
-    <div class="bg-card border border-border rounded-xl w-full max-w-md mx-4 shadow-xl">
+  <div id="settingsModal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center" style="display: none;">
+    <div class="bg-background border border-border rounded-xl w-full max-w-md mx-4 shadow-2xl">
       <div class="flex items-center justify-between p-6 border-b border-border">
         <h2 class="text-xl font-semibold">Settings</h2>
         <button onclick="closeSettings()" class="p-2 hover:bg-accent rounded-lg transition-colors">
@@ -166,7 +166,7 @@
       <div class="p-6 space-y-6">
         <div>
           <label class="block text-sm font-medium mb-2">Theme</label>
-          <select id="themeSelect" class="flex h-9 w-full items-center justify-between rounded-md border border-border bg-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
+          <select id="themeSelect" class="flex h-9 w-full items-center justify-between rounded-md border border-border bg-input-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] dark:bg-muted dark:border-muted appearance-none cursor-pointer">
             <option value="auto">Auto</option>
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -174,7 +174,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium mb-2">Default View</label>
-          <select id="defaultViewSelect" class="flex h-9 w-full items-center justify-between rounded-md border border-border bg-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]">
+          <select id="defaultViewSelect" class="flex h-9 w-full items-center justify-between rounded-md border border-border bg-input-background px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] dark:bg-muted dark:border-muted appearance-none cursor-pointer">
             <option value="environment">Environment</option>
             <option value="project">Project</option>
             <option value="team">Team</option>
