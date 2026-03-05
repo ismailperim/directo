@@ -312,10 +312,10 @@ function updateFilterBar() {
 
     const createBadge = (text, onRemove) => {
       const badge = document.createElement('span');
-      badge.className = 'inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-sm';
+      badge.className = 'inline-flex items-center justify-center rounded-md border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium gap-1';
       badge.innerHTML = `
         ${text}
-        <button class="hover:bg-background/50 rounded p-0.5" onclick='${onRemove}'>
+        <button class="hover:bg-background/50 rounded p-0.5 transition-colors" onclick='${onRemove}'>
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -388,7 +388,7 @@ function renderEnvironmentView() {
 
     section.innerHTML = `
       <div class="flex items-center gap-3">
-        <span class="inline-flex items-center px-3 py-1 rounded-lg border ${colors.badge} uppercase tracking-wider text-sm font-semibold">
+        <span class="inline-flex items-center justify-center rounded-md border ${colors.badge} px-3 py-1 text-sm font-semibold uppercase tracking-wider">
           ${env}
         </span>
         <span class="text-sm text-muted-foreground">
@@ -497,12 +497,12 @@ function renderServiceCard(service, environment) {
 
       return `
         <a href="${item.url}" target="_blank" rel="noopener noreferrer"
-           class="flex items-center justify-between p-3 rounded-lg border border-border transition-all duration-200 hover:bg-accent hover:border-primary/50 group">
+           class="flex items-center justify-between p-3 rounded-lg border border-border transition-all duration-200 hover:bg-accent hover:border-primary/50 group/link">
           <div class="flex items-center gap-3">
             ${item.health_check ? `<div class="health-indicator w-2 h-2 rounded-full shadow-md ${healthClass}" data-service-id="${service.id}" data-group-idx="${groupIdx}" data-link-idx="${itemIdx}"></div>` : ''}
             <span class="font-medium text-sm">${item.name}</span>
           </div>
-          <svg class="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-muted-foreground group-hover/link:text-primary transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
           </svg>
         </a>
@@ -511,26 +511,28 @@ function renderServiceCard(service, environment) {
   ).join('');
 
   return `
-    <div class="group hover:shadow-lg transition-all duration-300 border border-border rounded-lg bg-card hover:border-primary/50 h-full flex flex-col">
-      <div class="p-6 flex-1">
-        <div class="flex items-start gap-3 mb-4">
+    <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full">
+      <div class="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 pt-6">
+        <div class="flex items-start gap-3">
           <div class="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
             <span class="text-xl">${service.icon || '🌐'}</span>
           </div>
           <div class="flex-1 min-w-0">
-            <h3 class="text-lg font-semibold mb-1">${service.name}</h3>
-            ${service.description ? `<p class="text-sm text-muted-foreground">${service.description}</p>` : ''}
+            <h4 class="text-lg leading-none mb-1">${service.name}</h4>
+            ${service.description ? `<p class="text-sm text-muted-foreground mt-1">${service.description}</p>` : ''}
           </div>
         </div>
 
         ${service.tags && service.tags.length > 0 ? `
-          <div class="flex flex-wrap gap-1.5 mb-4">
+          <div class="flex flex-wrap gap-1.5 mt-3">
             ${service.tags.map(tag => `
-              <span class="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs">${tag}</span>
+              <span class="inline-flex items-center justify-center rounded-md border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${tag}</span>
             `).join('')}
           </div>
         ` : ''}
+      </div>
 
+      <div class="px-6 pb-6">
         <div class="space-y-2">
           ${linksHtml}
         </div>
@@ -573,8 +575,8 @@ function openFilters() {
   const unique = getUniqueValues();
   
   const createCheckbox = (value, checked, label) => `
-    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-accent cursor-pointer">
-      <input type="checkbox" value="${value}" ${checked ? 'checked' : ''} class="w-4 h-4 rounded border-border">
+    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors">
+      <input type="checkbox" value="${value}" ${checked ? 'checked' : ''} class="w-4 h-4 rounded border-border accent-primary">
       <span class="text-sm">${label || value}</span>
     </label>
   `;
