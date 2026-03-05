@@ -13,11 +13,13 @@ Directo organizes your services, environments, and operational links in one plac
 ## Features
 
 - 📋 **YAML Configuration** - Single source of truth in Git
-- 🎯 **Environment Grouping** - Production, UAT, Dev views
-- 💚 **Health Checks** - Detect dead/stale links automatically (never hunt for 404s in Confluence again!)
-- 🔄 **Multiple Views** - Group by environment, project, team, or custom
-- 🎨 **Client Preferences** - Hide/show services, favorites, dark mode
-- 🐳 **Docker Ready** - One-command deployment
+- 🎯 **Smart Grouping** - View by environment, project, or team
+- 💚 **Real-Time Health Checks** - HTTP health checks with caching (TTL: 5min)
+- 🔍 **Powerful Filtering** - Search + filter by environment, project, tags
+- 💾 **Persistent Filters** - Client-side localStorage saves your preferences
+- 🎨 **Modern UI** - React + Tailwind CSS with dark mode support
+- 🌈 **Emoji Icons** - Visual service identification
+- 🐳 **Docker Ready** - Production-ready multi-stage build
 
 ## Use Cases
 
@@ -46,7 +48,7 @@ docker run -p 3000:3000 ghcr.io/ismailperim/directo:latest
 
 # Or run with custom config
 docker run -p 3000:3000 \
-  -v $(pwd)/services.yml:/app/services.yml \
+  -v $(pwd)/services.yml:/app/backend/services.yml \
   ghcr.io/ismailperim/directo:latest
 ```
 
@@ -68,29 +70,61 @@ docker-compose up -d
 git clone https://github.com/ismailperim/directo.git
 cd directo
 
-# Install dependencies
-npm install
+# Install all dependencies (root + backend + frontend)
+npm run install:all
 
 # Optional: Configure environment
-cp .env.example .env
+cp backend/.env.example backend/.env
 
 # The included services.yml has working examples - try it first!
 # Then customize with your own services
 
-# Run in development mode
+# Run in development mode (starts both backend + frontend)
 npm run dev
 ```
 
-Open http://localhost:3000 and explore the example services!
+**Development URLs:**
+- **Frontend (React UI)**: http://localhost:5173 (Vite dev server with hot reload)
+- **Backend (API)**: http://localhost:3000 (Express API server)
+
+**Production Build:**
+```bash
+# Build everything (backend + frontend)
+npm run build
+
+# Start production server (serves frontend + API from single port)
+npm start
+```
+
+Open http://localhost:3000 in production mode (or http://localhost:5173 in dev mode) and explore the example services!
 
 ## Architecture
 
-Directo consists of:
+Directo is a **React + Express monolith** with clean separation:
 
-1. **Config Parser** - Reads YAML service definitions
-2. **Health Check Engine** - Monitors service availability
-3. **API Server** - REST API for service data and health status
-4. **Web UI** - Dashboard with multiple view modes
+```
+directo/
+├── backend/          # Express API server (TypeScript)
+│   ├── src/
+│   │   ├── api/      # REST endpoints
+│   │   ├── core/     # Config loader, health checker
+│   │   └── utils/    # Service normalizer, logger
+│   └── services.yml  # YAML service configuration
+├── frontend/         # React UI (TypeScript + Vite)
+│   └── src/
+│       ├── app/      # App component + views
+│       └── api/      # API client for backend
+└── Dockerfile        # Multi-stage build (frontend + backend)
+```
+
+**Components:**
+
+1. **YAML Config Loader** (backend) - Parses service definitions
+2. **Service Normalizer** (backend) - Transforms nested structure to flat UI format
+3. **Health Check Engine** (backend) - Monitors service availability
+4. **REST API** (backend) - `/api/services` endpoints
+5. **React Dashboard** (frontend) - Modern UI with filters, search, view modes
+6. **Vite Build** (frontend) - Optimized production bundle served by Express
 
 ## Configuration
 
@@ -122,17 +156,24 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Roadmap
 
-- [ ] YAML config parser
-- [ ] Health check engine (server-side)
-- [ ] Client-side health checks
-- [ ] Environment/project/team view modes
-- [ ] Client preferences (local storage)
-- [ ] Dark mode support
+- [x] YAML config parser
+- [x] Health check engine (server-side HTTP checks)
+- [x] Environment/project/team view modes
+- [x] Client preferences (localStorage filter persistence)
+- [x] Dark mode support
+- [x] Search and filtering (environment, project, tags)
+- [x] React + TypeScript frontend
+- [x] Multi-stage Docker build
+- [ ] Client-side health checks (CORS-friendly)
 - [ ] Prometheus/Grafana integration for health status
+- [ ] Health check alerting/notifications
+- [ ] Service favorites/pinning
+- [ ] Custom grouping via YAML
 - [ ] LDAP/SSO authentication
+- [ ] Multi-tenancy support
 
 ---
 
-**Status**: Early Development 🚧
+**Status**: Production Ready ✅
 
 Built with Node.js, TypeScript, and Docker.
