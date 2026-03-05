@@ -10,6 +10,8 @@
 
 Directo organizes your services, environments, and operational links in one place. No more bookmark chaos - just a clean, YAML-configured dashboard with health checks and flexible grouping.
 
+![Directo Dashboard](docs/screen1.png)
+
 ## Features
 
 - 📋 **YAML Configuration** - Single source of truth in Git
