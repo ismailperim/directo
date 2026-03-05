@@ -1,0 +1,105 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get tag name
+        id: tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG=${{ steps.tag.outputs.TAG }}
+          VERSION=${TAG#v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          awk "/^## \[$VERSION\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "No changelog found for version $VERSION, using generic notes"
+            echo "See CHANGELOG.md for details" > release_notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.TAG }}
+          name: ${{ steps.tag.outputs.TAG }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: ${{ contains(steps.tag.outputs.TAG, '-alpha') || contains(steps.tag.outputs.TAG, '-beta') || contains(steps.tag.outputs.TAG, '-rc') }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Docker image links to release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = '${{ steps.tag.outputs.TAG }}';
+            const version = '${{ steps.version.outputs.VERSION }}';
+            const releaseBody = `
+            
+            ---
+            
+            ## 🐳 Docker Images
+            
+            This release is available as Docker images for multiple platforms:
+            
+            \`\`\`bash
+            # Pull latest
+            docker pull ghcr.io/ismailperim/directo:latest
+            
+            # Pull specific version
+            docker pull ghcr.io/ismailperim/directo:${tag}
+            docker pull ghcr.io/ismailperim/directo:${version}
+            
+            # Run
+            docker run -p 3000:3000 ghcr.io/ismailperim/directo:${tag}
+            \`\`\`
+            
+            **Platforms:** linux/amd64, linux/arm64
+            
+            **Registry:** [GitHub Container Registry](https://github.com/ismailperim/directo/pkgs/container/directo)
+            
+            ---
+            
+            ## 📚 Documentation
+            
+            - [README](https://github.com/ismailperim/directo#readme)
+            - [Configuration Guide](https://github.com/ismailperim/directo/blob/main/docs/configuration.md)
+            - [Docker Compose Example](https://github.com/ismailperim/directo/blob/main/docker-compose.yml)
+            `;
+            
+            // Get the release
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag
+            });
+            
+            // Update release body
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id,
+              body: release.body + releaseBody
+            });
