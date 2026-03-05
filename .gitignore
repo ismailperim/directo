@@ -42,3 +42,6 @@ coverage/
 # Temporary files
 tmp/
 temp/
+
+# Private development notes (not for public repo)
+.claude/
