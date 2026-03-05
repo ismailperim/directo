@@ -179,3 +179,17 @@ MIT License - see [LICENSE](LICENSE) for details.
 **Status**: Production Ready ✅
 
 Built with Node.js, TypeScript, and Docker.
+
+## Author
+
+**İsmail Perim** - Senior DevOps Engineer
+
+- 🌐 Website: [ismailperim.com](https://ismailperim.com)
+- 📝 Medium: [@ismailperim](https://ismailperim.medium.com)
+- 💼 LinkedIn: [İsmail Perim](https://www.linkedin.com/in/ismailperim)
+- 🐦 Twitter: [@ismailperim](https://twitter.com/ismailperim)
+- 📱 iOS Apps:
+  - [Fayn: Monitoring](https://apps.apple.com/app/fayn-monitoring/id1234567890)
+  - [Upti: Cloud Status](https://apps.apple.com/app/upti/id1234567890)
+  - [SuitSnap: AI Headshots](https://apps.apple.com/us/app/suitsnap-ai-headshots/id6759380847)
+  - [CertWarden: SSL Monitor](https://apps.apple.com/app/certwarden/id1234567890)
