@@ -9,7 +9,7 @@ import { ConfigLoader } from './core/config-loader';
 import { HealthChecker } from './core/health-checker';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const SERVICES_CONFIG = process.env.SERVICES_CONFIG || './services.yml';
 const HEALTH_CACHE_TTL = parseInt(process.env.HEALTH_CACHE_TTL || '300', 10);
 
@@ -53,10 +53,11 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Start server
-app.listen(PORT, () => {
+// Start server (bind to all interfaces for network access)
+app.listen(PORT, '0.0.0.0', () => {
   logger.info(`Directo server running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  logger.info(`Access: http://localhost:${PORT} or http://<your-ip>:${PORT}`);
 });
 
 // Graceful shutdown
