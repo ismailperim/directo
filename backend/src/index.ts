@@ -42,7 +42,9 @@ app.use('/api/health-check', createHealthCheckRouter(configLoader, healthChecker
 
 // Serve static files (frontend) - only in production
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../../frontend/dist');
+  // In Docker: /app/dist/../frontend/dist = /app/frontend/dist
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  logger.info(`Serving frontend from: ${frontendPath}`);
   app.use(express.static(frontendPath));
 
   // Catch-all: serve index.html for SPA routing
