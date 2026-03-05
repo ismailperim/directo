@@ -112,6 +112,23 @@ input, p {
   background: var(--muted-foreground);
 }
 
+/* Icon container backgrounds */
+.service-icon-bg {
+  background-color: rgba(3, 2, 19, 0.1);
+}
+
+.dark .service-icon-bg {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.service-icon-bg:hover {
+  background-color: rgba(3, 2, 19, 0.15);
+}
+
+.dark .service-icon-bg:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 /* Select styling */
 select option {
   background: var(--background);

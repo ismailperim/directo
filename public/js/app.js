@@ -312,7 +312,9 @@ function updateFilterBar() {
 
     const createBadge = (text, onRemove) => {
       const badge = document.createElement('span');
-      badge.className = 'inline-flex items-center justify-center rounded-md border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium gap-1';
+      badge.className = 'inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium gap-1';
+      badge.style.backgroundColor = 'var(--secondary)';
+      badge.style.color = 'var(--secondary-foreground)';
       badge.innerHTML = `
         ${text}
         <button class="hover:bg-background/50 rounded p-0.5 transition-colors" onclick='${onRemove}'>
@@ -514,7 +516,7 @@ function renderServiceCard(service, environment) {
     <div class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full">
       <div class="grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 pt-6">
         <div class="flex items-start gap-3">
-          <div class="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+          <div class="p-2 rounded-lg transition-colors service-icon-bg">
             <span class="text-xl">${service.icon || '🌐'}</span>
           </div>
           <div class="flex-1 min-w-0">
@@ -526,7 +528,7 @@ function renderServiceCard(service, environment) {
         ${service.tags && service.tags.length > 0 ? `
           <div class="flex flex-wrap gap-1.5 mt-3">
             ${service.tags.map(tag => `
-              <span class="inline-flex items-center justify-center rounded-md border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${tag}</span>
+              <span class="inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium" style="background-color: var(--secondary); color: var(--secondary-foreground);">${tag}</span>
             `).join('')}
           </div>
         ` : ''}
