@@ -18,9 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Emoji service icons from YAML config
 - Modern UI with Tailwind CSS
 - Dark mode support
-- Footer with GitHub/sponsor links
+- Footer with GitHub/sponsor links and version number
 - Service normalizer: YAML nested structure → flat API format
 - Multi-stage Docker build (frontend + backend)
+- Automated GitHub Release workflow
+- Private development notes (.claude/ folder)
 
 ### Changed
 - Architecture: Complete rewrite from vanilla JS to React + Express monolith
@@ -32,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Radix UI dropdown stability issues (replaced with native implementation)
 - Docker path resolution for frontend static files
 - Health check false negatives on working URLs
+- Network access (server now binds to 0.0.0.0 for LAN access)
 
 ### Infrastructure
 - GitHub Actions with buildx cache optimization
