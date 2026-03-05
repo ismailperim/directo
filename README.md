@@ -13,11 +13,13 @@ Directo organizes your services, environments, and operational links in one plac
 ## Features
 
 - 📋 **YAML Configuration** - Single source of truth in Git
-- 🎯 **Environment Grouping** - Production, UAT, Dev views
-- 💚 **Health Checks** - Detect dead/stale links automatically (never hunt for 404s in Confluence again!)
-- 🔄 **Multiple Views** - Group by environment, project, team, or custom
-- 🎨 **Client Preferences** - Hide/show services, favorites, dark mode
-- 🐳 **Docker Ready** - One-command deployment
+- 🎯 **Smart Grouping** - View by environment, project, or team
+- 💚 **Real-Time Health Checks** - HTTP health checks with caching (TTL: 5min)
+- 🔍 **Powerful Filtering** - Search + filter by environment, project, tags
+- 💾 **Persistent Filters** - Client-side localStorage saves your preferences
+- 🎨 **Modern UI** - React + Tailwind CSS with dark mode support
+- 🌈 **Emoji Icons** - Visual service identification
+- 🐳 **Docker Ready** - Production-ready multi-stage build
 
 ## Use Cases
 
@@ -46,7 +48,7 @@ docker run -p 3000:3000 ghcr.io/ismailperim/directo:latest
 
 # Or run with custom config
 docker run -p 3000:3000 \
-  -v $(pwd)/services.yml:/app/services.yml \
+  -v $(pwd)/services.yml:/app/backend/services.yml \
   ghcr.io/ismailperim/directo:latest
 ```
 
@@ -154,17 +156,24 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Roadmap
 
-- [ ] YAML config parser
-- [ ] Health check engine (server-side)
-- [ ] Client-side health checks
-- [ ] Environment/project/team view modes
-- [ ] Client preferences (local storage)
-- [ ] Dark mode support
+- [x] YAML config parser
+- [x] Health check engine (server-side HTTP checks)
+- [x] Environment/project/team view modes
+- [x] Client preferences (localStorage filter persistence)
+- [x] Dark mode support
+- [x] Search and filtering (environment, project, tags)
+- [x] React + TypeScript frontend
+- [x] Multi-stage Docker build
+- [ ] Client-side health checks (CORS-friendly)
 - [ ] Prometheus/Grafana integration for health status
+- [ ] Health check alerting/notifications
+- [ ] Service favorites/pinning
+- [ ] Custom grouping via YAML
 - [ ] LDAP/SSO authentication
+- [ ] Multi-tenancy support
 
 ---
 
-**Status**: Early Development 🚧
+**Status**: Production Ready ✅
 
 Built with Node.js, TypeScript, and Docker.

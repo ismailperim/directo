@@ -32,6 +32,8 @@ export function FilterBar({
   const hasActiveFilters =
     selectedEnvironments.length > 0 || selectedTags.length > 0;
 
+  console.log('FilterBar render', { availableEnvironments, availableTags });
+
   return (
     <div className="border-b border-border bg-card/30 backdrop-blur-sm">
       <div className="container mx-auto px-6 py-4">

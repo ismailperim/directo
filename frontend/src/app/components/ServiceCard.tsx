@@ -1,4 +1,4 @@
-import { ExternalLink, Globe, Server, Database, Code, Laptop } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { motion } from "motion/react";
@@ -7,7 +7,7 @@ import { cn } from "./ui/utils";
 interface Link {
   name: string;
   url: string;
-  healthy: boolean;
+  healthy: boolean | null;
 }
 
 interface Service {
@@ -23,16 +23,7 @@ interface ServiceCardProps {
   service: Service;
 }
 
-const iconMap: Record<string, any> = {
-  globe: Globe,
-  server: Server,
-  database: Database,
-  code: Code,
-  laptop: Laptop,
-};
-
 export function ServiceCard({ service }: ServiceCardProps) {
-  const IconComponent = iconMap[service.icon] || Globe;
 
   return (
     <motion.div
@@ -43,8 +34,8 @@ export function ServiceCard({ service }: ServiceCardProps) {
       <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full">
         <CardHeader>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <IconComponent className="w-5 h-5 text-primary" />
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors text-xl">
+              {service.icon}
             </div>
             <div className="flex-1 min-w-0">
               <CardTitle className="text-lg">{service.name}</CardTitle>
@@ -81,10 +72,10 @@ export function ServiceCard({ service }: ServiceCardProps) {
                 <div className="flex items-center gap-3">
                   <div
                     className={cn(
-                      "w-2 h-2 rounded-full",
-                      link.healthy ? "bg-green-500" : "bg-red-500",
-                      link.healthy ? "shadow-green-500/50" : "shadow-red-500/50",
-                      "shadow-md"
+                      "w-2 h-2 rounded-full shadow-md",
+                      link.healthy === null && "bg-gray-400 shadow-gray-400/50",
+                      link.healthy === true && "bg-green-500 shadow-green-500/50",
+                      link.healthy === false && "bg-red-500 shadow-red-500/50"
                     )}
                   />
                   <span className="font-medium text-sm">{link.name}</span>

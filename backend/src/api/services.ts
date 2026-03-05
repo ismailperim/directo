@@ -1,22 +1,49 @@
 import { Router } from 'express';
 import { ConfigLoader } from '../core/config-loader';
+import { HealthChecker } from '../core/health-checker';
 import { logger } from '../utils/logger';
 import { normalizeServices } from '../utils/service-normalizer';
 
-export function createServicesRouter(configLoader: ConfigLoader): Router {
+export function createServicesRouter(configLoader: ConfigLoader, healthChecker: HealthChecker): Router {
   const router = Router();
 
   /**
    * GET /api/services
    * Get all services with optional filtering
    */
-  router.get('/', (req, res) => {
+  router.get('/', async (req, res) => {
     try {
       const { environment, team, tag } = req.query;
 
       // Get raw services and normalize them
       let rawServices = configLoader.getServices();
       let normalized = normalizeServices(rawServices);
+
+      // Apply health check results
+      for (const service of normalized) {
+        // Find the original service in raw data to get health check config
+        const rawService = rawServices.find((rs) => service.id.startsWith(rs.id));
+        if (!rawService) continue;
+
+        // Find the environment's links
+        const envLinks = rawService.links.find(
+          (linkGroup) => linkGroup.environment === service.environment
+        );
+        if (!envLinks) continue;
+
+        // Update health status for each link
+        for (const link of service.links) {
+          const rawLink = envLinks.items.find((item) => item.url === link.url);
+          if (!rawLink || !rawLink.health_check) {
+            link.healthy = null; // No health check configured
+            continue;
+          }
+
+          // Get health check result from cache
+          const healthResult = await healthChecker.check(rawLink.url, rawLink.health_check);
+          link.healthy = healthResult.status === 'healthy';
+        }
+      }
 
       // Filter by environment
       if (environment && typeof environment === 'string') {

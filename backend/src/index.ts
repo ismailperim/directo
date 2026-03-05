@@ -37,7 +37,7 @@ app.use((req, _res, next) => {
 
 // API Routes (must come before static files)
 app.use('/health', healthRouter);
-app.use('/api/services', createServicesRouter(configLoader));
+app.use('/api/services', createServicesRouter(configLoader, healthChecker));
 app.use('/api/health-check', createHealthCheckRouter(configLoader, healthChecker));
 
 // Serve static files (frontend) - only in production

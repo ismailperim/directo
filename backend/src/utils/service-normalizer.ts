@@ -49,7 +49,7 @@ export function normalizeServices(services: Service[]): NormalizedService[] {
         links: items.map((item: LinkItem) => ({
           name: item.name,
           url: item.url,
-          healthy: null, // Will be populated by health check
+          healthy: null, // Will be populated by health checker
         })),
       });
     }

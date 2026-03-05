@@ -1,4 +1,4 @@
-import { Search, Settings, LayoutGrid, List, Layers } from "lucide-react";
+import { Search, LayoutGrid, List, Layers } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import {
@@ -8,12 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+
 import { Badge } from "./ui/badge";
 
 interface HeaderProps {
@@ -84,19 +79,6 @@ export function Header({
                 </SelectItem>
               </SelectContent>
             </Select>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Settings className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Preferences</DropdownMenuItem>
-                <DropdownMenuItem>Run Health Checks</DropdownMenuItem>
-                <DropdownMenuItem>Export Configuration</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
       </div>
