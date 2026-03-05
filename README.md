@@ -1,5 +1,11 @@
 # Directo
 
+[![Docker Build](https://github.com/ismailperim/directo/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/ismailperim/directo/actions/workflows/docker-publish.yml)
+[![GitHub Stars](https://img.shields.io/github/stars/ismailperim/directo?style=flat&logo=github)](https://github.com/ismailperim/directo/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/ismailperim/directo?style=flat&logo=github)](https://github.com/ismailperim/directo/issues)
+[![License](https://img.shields.io/github/license/ismailperim/directo?style=flat)](https://github.com/ismailperim/directo/blob/main/LICENSE)
+[![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue?style=flat&logo=docker)](https://github.com/ismailperim/directo/pkgs/container/directo)
+
 **Your central dashboard for all service links.**
 
 Directo organizes your services, environments, and operational links in one place. No more bookmark chaos - just a clean, YAML-configured dashboard with health checks and flexible grouping.
