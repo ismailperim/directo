@@ -1,6 +1,8 @@
 import { Github, Heart, ExternalLink } from "lucide-react";
+import packageJson from '../../../package.json';
 
 export function Footer() {
+  const version = packageJson.version;
   return (
     <footer className="border-t border-border bg-card/30 backdrop-blur-sm mt-16">
       <div className="container mx-auto px-6 py-8">
@@ -46,7 +48,7 @@ export function Footer() {
           </div>
 
           <div className="text-xs text-muted-foreground">
-            © 2026 Directo • MIT License
+            © 2026 Directo • v{version} • MIT License
           </div>
         </div>
       </div>
