@@ -184,10 +184,9 @@ Built with Node.js, TypeScript, and Docker.
 
 **İsmail Perim** - Senior DevOps Engineer
 
-- 🌐 Website: [ismailperim.com](https://ismailperim.com)
+- 🌐 Website: [perim.net](https://perim.net)
 - 📝 Medium: [@ismailperim](https://ismailperim.medium.com)
 - 💼 LinkedIn: [İsmail Perim](https://www.linkedin.com/in/ismailperim)
-- 🐦 Twitter: [@ismailperim](https://twitter.com/ismailperim)
 - 📱 iOS Apps:
   - [Fayn: Monitoring](https://apps.apple.com/app/fayn-monitoring/id1234567890)
   - [Upti: Cloud Status](https://apps.apple.com/app/upti/id1234567890)
