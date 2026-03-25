@@ -64,7 +64,9 @@ export class HealthChecker {
       targetUrl,
       checkConfig.method || 'GET',
       checkConfig.expected_status || 200,
-      checkConfig.timeout || 5000
+      checkConfig.timeout || 5000,
+      checkConfig.auth,
+      checkConfig.headers
     );
 
     // Cache result
@@ -80,7 +82,9 @@ export class HealthChecker {
     url: string,
     method: string,
     _expectedStatus: number,
-    timeoutMs: number
+    timeoutMs: number,
+    auth?: { username: string; password: string },
+    customHeaders?: Record<string, string>
   ): Promise<HealthCheckResult> {
     const startTime = Date.now();
 
@@ -91,12 +95,26 @@ export class HealthChecker {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
+      // Build headers
+      const headers: Record<string, string> = {
+        'User-Agent': 'Directo/1.0 HealthChecker',
+      };
+
+      // Add basic auth if provided
+      if (auth) {
+        const credentials = Buffer.from(`${auth.username}:${auth.password}`).toString('base64');
+        headers['Authorization'] = `Basic ${credentials}`;
+      }
+
+      // Add custom headers (can override auth)
+      if (customHeaders) {
+        Object.assign(headers, customHeaders);
+      }
+
       const response = await fetch(checkUrl, {
         method,
         signal: controller.signal,
-        headers: {
-          'User-Agent': 'Directo/1.0 HealthChecker',
-        },
+        headers,
         redirect: 'follow',
       });
 
@@ -161,6 +179,8 @@ export class HealthChecker {
     mode?: 'server-side' | 'client-side';
     provider?: string;
     timeout?: number;
+    auth?: { username: string; password: string };
+    headers?: Record<string, string>;
   } {
     if (typeof config === 'boolean') {
       return { enabled: config };
@@ -173,6 +193,8 @@ export class HealthChecker {
       expected_status: config.expected_status,
       mode: config.mode,
       provider: config.provider,
+      auth: config.auth,
+      headers: config.headers,
     };
   }
 

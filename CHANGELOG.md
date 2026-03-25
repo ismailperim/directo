@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Optimized font sizes for better information density
   - Smaller icons and badges for cleaner appearance
   - ~40% vertical space savings compared to original design
+- **GitHub Repository Links**: Repository links from YAML config now displayed in service cards
+  - GitHub icon appears in top-right corner of cards when repository URL is configured
+  - One-click access to service source code from dashboard
+  - Supports any Git hosting platform URL (GitHub, GitLab, Bitbucket, etc.)
 
 ### Changed
 - **View Mode Redesign**: Replaced "By Environment" with "All Services" view

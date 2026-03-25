@@ -166,7 +166,44 @@ For internal services behind VPN:
 
 The browser will make the health check request instead of the server. Requires CORS configuration on the target service.
 
-#### 4. Prometheus Integration
+#### 4. Basic Authentication
+
+For services requiring authentication:
+
+```yaml
+- name: Protected API
+  url: https://api.company.com/admin
+  health_check:
+    enabled: true
+    auth:
+      username: monitor
+      password: secure-password
+```
+
+**Basic Auth Fields:**
+- `auth.username`: Username for basic authentication
+- `auth.password`: Password for basic authentication
+
+Directo will automatically encode credentials and send `Authorization: Basic <base64>` header.
+
+#### 5. Custom Headers
+
+For API key authentication or custom headers:
+
+```yaml
+- name: API with Token
+  url: https://api.company.com/v1
+  health_check:
+    enabled: true
+    headers:
+      Authorization: "Bearer your-api-token-here"
+      X-API-Key: "your-api-key"
+      User-Agent: "Custom-Monitor/1.0"
+```
+
+**Note:** Custom `headers` can override the basic `auth` if both are specified.
+
+#### 6. Prometheus Integration
 
 Use existing Prometheus metrics:
 
@@ -185,7 +222,7 @@ Use existing Prometheus metrics:
 - `query`: PromQL query (should return 1 for healthy, 0 for unhealthy)
 - `endpoint`: Prometheus server URL
 
-#### 5. Disabled Health Check
+#### 7. Disabled Health Check
 
 ```yaml
 - name: Admin Panel

@@ -2,6 +2,11 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import { logger } from '../utils/logger';
 
+export interface HealthCheckAuth {
+  username: string;
+  password: string;
+}
+
 export interface HealthCheckConfig {
   enabled: boolean;
   url?: string;
@@ -11,6 +16,8 @@ export interface HealthCheckConfig {
   provider?: 'prometheus';
   query?: string;
   endpoint?: string;
+  auth?: HealthCheckAuth;
+  headers?: Record<string, string>;
 }
 
 export interface LinkItem {

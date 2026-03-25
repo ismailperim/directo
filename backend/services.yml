@@ -212,14 +212,24 @@ services:
           - name: Grafana
             url: https://grafana.example.com
             icon: 📊
+            health_check:
+              enabled: true
+              auth:
+                username: admin
+                password: admin123
           
           - name: Prometheus
             url: https://prometheus.example.com
             icon: 🔥
+            health_check:
+              enabled: true
+              headers:
+                Authorization: "Bearer prometheus-api-token"
           
           - name: Alertmanager
             url: https://alerts.example.com
             icon: 🚨
+            health_check: true
 
 # Custom groupings
 groups:
