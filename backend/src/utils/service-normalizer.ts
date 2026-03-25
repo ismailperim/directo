@@ -1,58 +1,62 @@
 import { Service, LinkItem } from '../core/config-loader';
 
+export interface ServiceLink {
+  name: string;
+  url: string;
+  healthy: boolean | null;
+}
+
+export interface ServiceEnvironment {
+  name: string;
+  links: ServiceLink[];
+}
+
 export interface NormalizedService {
   id: string;
   name: string;
   description: string;
   tags: string[];
-  environment: string;
   project: string;
   group: string;
   icon: string;
-  links: Array<{
-    name: string;
-    url: string;
-    healthy: boolean | null;
-  }>;
+  environments: ServiceEnvironment[];
 }
 
 /**
  * Normalize a service from YAML format to frontend-friendly format
- * Splits services by environment so each environment gets its own service entry
+ * Groups all environments under a single service entry
  */
 export function normalizeServices(services: Service[]): NormalizedService[] {
   const normalized: NormalizedService[] = [];
 
   for (const service of services) {
     // Group links by environment
-    const linksByEnv = new Map<string, typeof service.links[0]['items']>();
+    const environments: ServiceEnvironment[] = [];
 
     for (const linkGroup of service.links) {
-      const env = linkGroup.environment || 'unknown';
-      if (!linksByEnv.has(env)) {
-        linksByEnv.set(env, []);
-      }
-      linksByEnv.get(env)!.push(...linkGroup.items);
-    }
-
-    // Create a normalized service for each environment
-    for (const [environment, items] of linksByEnv.entries()) {
-      normalized.push({
-        id: `${service.id}-${environment}`,
-        name: service.name,
-        description: service.description || '',
-        tags: service.tags || [],
-        environment,
-        project: service.team || 'Unknown',
-        group: getGroupFromTags(service.tags || []),
-        icon: service.icon || '🔗',
-        links: items.map((item: LinkItem) => ({
+      const envName = linkGroup.environment || 'unknown';
+      
+      environments.push({
+        name: envName,
+        links: linkGroup.items.map((item: LinkItem) => ({
           name: item.name,
           url: item.url,
           healthy: null, // Will be populated by health checker
         })),
       });
     }
+
+    // Create a single normalized service with all environments
+    normalized.push({
+      id: service.id,
+      name: service.name,
+      description: service.description || '',
+      tags: service.tags || [],
+      project: service.team || 'Unknown',
+      group: getGroupFromTags(service.tags || []),
+      icon: service.icon || '🔗',
+      environments,
+    });
   }
 
   return normalized;

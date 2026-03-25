@@ -22,32 +22,37 @@ export function createServicesRouter(configLoader: ConfigLoader, healthChecker: 
       // Apply health check results
       for (const service of normalized) {
         // Find the original service in raw data to get health check config
-        const rawService = rawServices.find((rs) => service.id.startsWith(rs.id));
+        const rawService = rawServices.find((rs) => rs.id === service.id);
         if (!rawService) continue;
 
-        // Find the environment's links
-        const envLinks = rawService.links.find(
-          (linkGroup) => linkGroup.environment === service.environment
-        );
-        if (!envLinks) continue;
+        // Update health status for each environment's links
+        for (const env of service.environments) {
+          // Find the environment's config in raw data
+          const envConfig = rawService.links.find(
+            (linkGroup) => linkGroup.environment === env.name
+          );
+          if (!envConfig) continue;
 
-        // Update health status for each link
-        for (const link of service.links) {
-          const rawLink = envLinks.items.find((item) => item.url === link.url);
-          if (!rawLink || !rawLink.health_check) {
-            link.healthy = null; // No health check configured
-            continue;
+          // Update health status for each link
+          for (const link of env.links) {
+            const rawLink = envConfig.items.find((item) => item.url === link.url);
+            if (!rawLink || !rawLink.health_check) {
+              link.healthy = null; // No health check configured
+              continue;
+            }
+
+            // Get health check result from cache
+            const healthResult = await healthChecker.check(rawLink.url, rawLink.health_check);
+            link.healthy = healthResult.status === 'healthy';
           }
-
-          // Get health check result from cache
-          const healthResult = await healthChecker.check(rawLink.url, rawLink.health_check);
-          link.healthy = healthResult.status === 'healthy';
         }
       }
 
       // Filter by environment
       if (environment && typeof environment === 'string') {
-        normalized = normalized.filter((s) => s.environment === environment);
+        normalized = normalized.filter((s) => 
+          s.environments.some((env) => env.name === environment)
+        );
       }
 
       // Filter by team/project

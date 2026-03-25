@@ -68,7 +68,7 @@ export default function App() {
 
   // Get unique values for filters
   const availableEnvironments = useMemo(
-    () => Array.from(new Set(services.map((s) => s.environment))),
+    () => Array.from(new Set(services.flatMap((s) => s.environments.map((e) => e.name)))),
     [services]
   );
 
@@ -91,17 +91,17 @@ export default function App() {
         const matchesSearch =
           service.name.toLowerCase().includes(query) ||
           service.description.toLowerCase().includes(query) ||
-          service.environment.toLowerCase().includes(query) ||
           service.project.toLowerCase().includes(query) ||
           service.group.toLowerCase().includes(query) ||
-          service.tags.some((tag) => tag.toLowerCase().includes(query));
+          service.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+          service.environments.some((env) => env.name.toLowerCase().includes(query));
         if (!matchesSearch) return false;
       }
 
       // Environment filter
       if (
         selectedEnvironments.length > 0 &&
-        !selectedEnvironments.includes(service.environment)
+        !service.environments.some((env) => selectedEnvironments.includes(env.name))
       ) {
         return false;
       }
@@ -257,6 +257,7 @@ export default function App() {
                 key={groupKey}
                 environment={groupKey}
                 services={groupedServices[groupKey]}
+                selectedEnvironments={selectedEnvironments}
                 color="primary"
               />
             ))

@@ -10,20 +10,30 @@ interface Link {
   healthy: boolean | null;
 }
 
+interface ServiceEnvironment {
+  name: string;
+  links: Link[];
+}
+
 interface Service {
   id: string;
   name: string;
   description: string;
   tags: string[];
-  links: Link[];
+  environments: ServiceEnvironment[];
   icon: string;
 }
 
 interface ServiceCardProps {
   service: Service;
+  selectedEnvironments?: string[];
 }
 
-export function ServiceCard({ service }: ServiceCardProps) {
+export function ServiceCard({ service, selectedEnvironments = [] }: ServiceCardProps) {
+  // Filter environments if filter is active
+  const visibleEnvironments = selectedEnvironments.length > 0
+    ? service.environments.filter((env) => selectedEnvironments.includes(env.name))
+    : service.environments;
 
   return (
     <motion.div
@@ -55,33 +65,47 @@ export function ServiceCard({ service }: ServiceCardProps) {
         </CardHeader>
 
         <CardContent>
-          <div className="space-y-2">
-            {service.links.map((link) => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(
-                  "flex items-center justify-between p-3 rounded-lg border",
-                  "transition-all duration-200",
-                  "hover:bg-accent hover:border-primary/50",
-                  "group/link"
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "w-2 h-2 rounded-full shadow-md",
-                      link.healthy === null && "bg-gray-400 shadow-gray-400/50",
-                      link.healthy === true && "bg-green-500 shadow-green-500/50",
-                      link.healthy === false && "bg-red-500 shadow-red-500/50"
-                    )}
-                  />
-                  <span className="font-medium text-sm">{link.name}</span>
+          <div className="space-y-4">
+            {visibleEnvironments.map((env, envIndex) => (
+              <div key={env.name} className={cn(envIndex > 0 && "pt-4 border-t border-border")}>
+                {/* Environment Label */}
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="outline" className="text-xs">
+                    {env.name}
+                  </Badge>
                 </div>
-                <ExternalLink className="w-4 h-4 text-muted-foreground group-hover/link:text-primary transition-colors" />
-              </a>
+                
+                {/* Links for this environment */}
+                <div className="space-y-2">
+                  {env.links.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "flex items-center justify-between p-3 rounded-lg border",
+                        "transition-all duration-200",
+                        "hover:bg-accent hover:border-primary/50",
+                        "group/link"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={cn(
+                            "w-2 h-2 rounded-full shadow-md",
+                            link.healthy === null && "bg-gray-400 shadow-gray-400/50",
+                            link.healthy === true && "bg-green-500 shadow-green-500/50",
+                            link.healthy === false && "bg-red-500 shadow-red-500/50"
+                          )}
+                        />
+                        <span className="font-medium text-sm">{link.name}</span>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-muted-foreground group-hover/link:text-primary transition-colors" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </CardContent>

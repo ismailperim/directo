@@ -102,7 +102,7 @@ export function FilterBarSimple({
                       onChange={() => onEnvironmentToggle(env)}
                       className="w-4 h-4 rounded border-input"
                     />
-                    <span className="text-sm capitalize">{env}</span>
+                    <span className="text-sm">{env}</span>
                   </label>
                 ))}
               </div>

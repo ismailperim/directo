@@ -5,7 +5,12 @@ import { motion } from "motion/react";
 interface Link {
   name: string;
   url: string;
-  healthy: boolean;
+  healthy: boolean | null;
+}
+
+interface ServiceEnvironment {
+  name: string;
+  links: Link[];
 }
 
 interface Service {
@@ -13,7 +18,7 @@ interface Service {
   name: string;
   description: string;
   tags: string[];
-  links: Link[];
+  environments: ServiceEnvironment[];
   icon: string;
 }
 
@@ -21,6 +26,7 @@ interface EnvironmentSectionProps {
   environment: string;
   services: Service[];
   color: string;
+  selectedEnvironments?: string[];
 }
 
 const colorMap: Record<string, string> = {
@@ -33,6 +39,7 @@ export function EnvironmentSection({
   environment,
   services,
   color,
+  selectedEnvironments = [],
 }: EnvironmentSectionProps) {
   const colorClass = colorMap[environment.toLowerCase()] || colorMap.dev;
 
@@ -46,7 +53,7 @@ export function EnvironmentSection({
       <div className="flex items-center gap-3">
         <Badge
           variant="outline"
-          className={`${colorClass} px-3 py-1 uppercase tracking-wider font-semibold`}
+          className={`${colorClass} px-3 py-1 tracking-wider font-semibold`}
         >
           {environment}
         </Badge>
@@ -57,7 +64,7 @@ export function EnvironmentSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {services.map((service) => (
-          <ServiceCard key={service.id} service={service} />
+          <ServiceCard key={service.id} service={service} selectedEnvironments={selectedEnvironments} />
         ))}
       </div>
     </motion.div>

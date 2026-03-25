@@ -4,16 +4,20 @@ export interface ServiceLink {
   healthy: boolean | null;
 }
 
+export interface ServiceEnvironment {
+  name: string;
+  links: ServiceLink[];
+}
+
 export interface Service {
   id: string;
   name: string;
   description: string;
   tags: string[];
-  environment: string;
   project: string;
   group: string;
   icon: string;
-  links: ServiceLink[];
+  environments: ServiceEnvironment[];
 }
 
 export interface ServicesResponse {

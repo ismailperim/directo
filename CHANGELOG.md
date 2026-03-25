@@ -10,11 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - CORS support with environment-based configuration (development: all origins, production: same-origin only)
 - Network access support: Frontend accessible via IP address (not just localhost)
+- **Environment Grouping**: Services now display all environments in a single card instead of separate cards
+  - Backend: Refactored `normalizeServices()` to group environments under each service
+  - Frontend: Updated ServiceCard component to display environment sections with grouped links
+  - Better organization: One card per service with expandable environment sections
+  - Filter support: Environment filter now shows/hides specific environments within cards
 
 ### Fixed
 - Filter dropdown click-outside behavior: Dropdowns now properly close when clicking outside
   - Implemented proper React click-outside detection using `useEffect` + `useRef`
   - Previous overlay-based approach replaced with native event listeners
+- Environment name display: Removed CSS text-transform (capitalize/uppercase) to preserve original YAML values
+  - Environment names now display exactly as written in YAML config
+  - Affects ServiceCard badges, filter dropdowns, and environment section headers
 
 ## [1.0.0] - 2026-03-05
 
