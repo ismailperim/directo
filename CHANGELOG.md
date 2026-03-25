@@ -15,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Frontend: Updated ServiceCard component to display environment sections with grouped links
   - Better organization: One card per service with expandable environment sections
   - Filter support: Environment filter now shows/hides specific environments within cards
+- **Compact/Minimalist UI**: Optimized for high-density service lists (tested with 105+ links)
+  - 2-column grid layout for links (responsive: 1 column on mobile, 2 on desktop)
+  - Reduced padding and spacing throughout cards (40% more compact)
+  - Optimized font sizes for better information density
+  - Smaller icons and badges for cleaner appearance
+  - ~40% vertical space savings compared to original design
+
+### Changed
+- **View Mode Redesign**: Replaced "By Environment" with "All Services" view
+  - "All Services" (default): Flat list without grouping, works naturally with environment grouping
+  - "By Project" and "By Group" remain for organizational grouping
+  - localStorage migration: old "environment" view mode auto-converts to "all"
+  - Section headers hidden in "All Services" view for cleaner UI
 
 ### Fixed
 - Filter dropdown click-outside behavior: Dropdowns now properly close when clicking outside

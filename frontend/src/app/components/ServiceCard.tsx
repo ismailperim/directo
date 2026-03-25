@@ -42,41 +42,41 @@ export function ServiceCard({ service, selectedEnvironments = [] }: ServiceCardP
       transition={{ duration: 0.3 }}
     >
       <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full">
-        <CardHeader>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors text-xl">
+        <CardHeader className="pb-3">
+          <div className="flex items-start gap-2.5">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors text-lg">
               {service.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg">{service.name}</CardTitle>
-              <CardDescription className="mt-1">
+              <CardTitle className="text-base font-semibold">{service.name}</CardTitle>
+              <CardDescription className="mt-1 text-sm">
                 {service.description}
               </CardDescription>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 mt-3">
+          <div className="flex flex-wrap gap-1.5 mt-2">
             {service.tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
+              <Badge key={tag} variant="secondary" className="text-xs px-2 py-0.5">
                 {tag}
               </Badge>
             ))}
           </div>
         </CardHeader>
 
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="pt-0">
+          <div className="space-y-3">
             {visibleEnvironments.map((env, envIndex) => (
-              <div key={env.name} className={cn(envIndex > 0 && "pt-4 border-t border-border")}>
+              <div key={env.name} className={cn(envIndex > 0 && "pt-3 border-t border-border")}>
                 {/* Environment Label */}
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline" className="text-xs">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Badge variant="outline" className="text-xs px-2 py-0.5">
                     {env.name}
                   </Badge>
                 </div>
                 
                 {/* Links for this environment */}
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {env.links.map((link) => (
                     <a
                       key={link.name}
@@ -84,16 +84,16 @@ export function ServiceCard({ service, selectedEnvironments = [] }: ServiceCardP
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn(
-                        "flex items-center justify-between p-3 rounded-lg border",
+                        "flex items-center justify-between p-2 rounded-lg border",
                         "transition-all duration-200",
                         "hover:bg-accent hover:border-primary/50",
                         "group/link"
                       )}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <div
                           className={cn(
-                            "w-2 h-2 rounded-full shadow-md",
+                            "w-2 h-2 rounded-full shadow-sm",
                             link.healthy === null && "bg-gray-400 shadow-gray-400/50",
                             link.healthy === true && "bg-green-500 shadow-green-500/50",
                             link.healthy === false && "bg-red-500 shadow-red-500/50"

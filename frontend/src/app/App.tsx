@@ -12,12 +12,17 @@ function loadFilters() {
   try {
     const saved = localStorage.getItem('directo-filters');
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // Migrate old "environment" view mode to "all"
+      if (parsed.viewMode === 'environment') {
+        parsed.viewMode = 'all';
+      }
+      return parsed;
     }
   } catch (error) {
     console.error('Failed to load filters from localStorage:', error);
   }
-  return { environments: [], projects: [], tags: [], viewMode: 'environment' };
+  return { environments: [], projects: [], tags: [], viewMode: 'all' };
 }
 
 // Save filters to localStorage
@@ -37,7 +42,7 @@ export default function App() {
   
   // Load saved filters on mount
   const savedFilters = loadFilters();
-  const [viewMode, setViewMode] = useState(savedFilters.viewMode || "environment");
+  const [viewMode, setViewMode] = useState(savedFilters.viewMode || "all");
   const [selectedEnvironments, setSelectedEnvironments] = useState<string[]>(savedFilters.environments || []);
   const [selectedProjects, setSelectedProjects] = useState<string[]>(savedFilters.projects || []);
   const [selectedTags, setSelectedTags] = useState<string[]>(savedFilters.tags || []);
@@ -130,11 +135,15 @@ export default function App() {
   const groupedServices = useMemo(() => {
     const groups: Record<string, Service[]> = {};
 
+    // For "all" view, no grouping - use a single "all" key
+    if (viewMode === "all") {
+      groups["all"] = filteredServices;
+      return groups;
+    }
+
     filteredServices.forEach((service) => {
       const key =
-        viewMode === "environment"
-          ? service.environment
-          : viewMode === "project"
+        viewMode === "project"
           ? service.project
           : service.group;
 
@@ -171,11 +180,11 @@ export default function App() {
     setSelectedTags([]);
   };
 
-  // Sort environment keys
+  // Sort group keys
   const sortedGroupKeys = Object.keys(groupedServices).sort((a, b) => {
-    if (viewMode === "environment") {
-      const order = ["dev", "staging", "production"];
-      return order.indexOf(a.toLowerCase()) - order.indexOf(b.toLowerCase());
+    // For "all" view, no sorting needed (single key)
+    if (viewMode === "all") {
+      return 0;
     }
     return a.localeCompare(b);
   });
@@ -250,7 +259,7 @@ export default function App() {
       />
 
       <main className="container mx-auto px-6 py-8 flex-1">
-        <div className="space-y-10">
+        <div className="space-y-6">
           {sortedGroupKeys.length > 0 ? (
             sortedGroupKeys.map((groupKey) => (
               <EnvironmentSection

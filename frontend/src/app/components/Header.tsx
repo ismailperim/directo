@@ -59,10 +59,10 @@ export function Header({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="environment">
+                <SelectItem value="all">
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4" />
-                    By Environment
+                    All Services
                   </div>
                 </SelectItem>
                 <SelectItem value="project">
