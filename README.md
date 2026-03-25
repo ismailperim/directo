@@ -15,12 +15,16 @@ Directo organizes your services, environments, and operational links in one plac
 ## Features
 
 - 📋 **YAML Configuration** - Single source of truth in Git
-- 🎯 **Smart Grouping** - View by environment, project, or team
-- 💚 **Real-Time Health Checks** - HTTP health checks with caching (TTL: 5min)
+- 🎯 **Smart Grouping** - Environment grouping with colored badges and icons
+- 💚 **Real-Time Health Checks** - HTTP health checks with auth support (TTL: 5min)
 - 🔍 **Powerful Filtering** - Search + filter by environment, project, tags
 - 💾 **Persistent Filters** - Client-side localStorage saves your preferences
-- 🎨 **Modern UI** - React + Tailwind CSS with dark mode support
+- 🎨 **Customizable Styles** - 9 colors & 8 icons for environment badges
+- 🔐 **Health Check Auth** - Basic auth & custom headers support
+- 🔗 **Repository Links** - Quick access to source code from dashboard
+- 🎯 **Compact Design** - Optimized for high-density service lists (100+ links)
 - 🌈 **Emoji Icons** - Visual service identification
+- 🌙 **Dark Mode** - Beautiful UI in light and dark themes
 - 🐳 **Docker Ready** - Production-ready multi-stage build
 
 ## Use Cases

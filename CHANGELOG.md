@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-03-25 (Unreleased)
+## [1.1.0] - 2026-03-25
 
 ### Added
 - CORS support with environment-based configuration (development: all origins, production: same-origin only)
@@ -49,6 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Filter dropdown click-outside behavior: Dropdowns now properly close when clicking outside
   - Implemented proper React click-outside detection using `useEffect` + `useRef`
   - Previous overlay-based approach replaced with native event listeners
+- Filter dropdown z-index: Dropdowns now appear above service cards
+  - Filter bar now uses `sticky top-0 z-40` (stays at top when scrolling)
+  - Dropdown menus use `z-[100]` for proper layering above all content
 - Environment name display: Removed CSS text-transform (capitalize/uppercase) to preserve original YAML values
   - Environment names now display exactly as written in YAML config
   - Affects ServiceCard badges, filter dropdowns, and environment section headers
