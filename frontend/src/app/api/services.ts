@@ -26,6 +26,22 @@ export interface ServicesResponse {
   count: number;
 }
 
+export interface EnvironmentStyle {
+  color: 'red' | 'amber' | 'green' | 'blue' | 'purple' | 'gray' | 'indigo' | 'pink' | 'cyan';
+  icon: 'server' | 'flask' | 'laptop' | 'cloud' | 'zap' | 'globe' | 'shield' | 'code';
+}
+
+export interface GlobalSettings {
+  default_view?: string;
+  theme?: string;
+  environment_styles?: Record<string, EnvironmentStyle>;
+  health_check?: {
+    enabled?: boolean;
+    interval?: number;
+    timeout?: number;
+  };
+}
+
 // Dynamic API base URL: works for localhost and network access
 // In dev mode, uses Vite proxy (no explicit URL needed)
 // In production, backend serves frontend from same origin
@@ -53,4 +69,14 @@ export async function fetchEnvironments(): Promise<string[]> {
   
   const data = await response.json();
   return data.environments || [];
+}
+
+export async function fetchSettings(): Promise<GlobalSettings> {
+  const response = await fetch(`${API_BASE}/api/services/meta/settings`);
+  
+  if (!response.ok) {
+    throw new Error(`Failed to fetch settings: ${response.statusText}`);
+  }
+  
+  return await response.json();
 }

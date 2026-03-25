@@ -3,7 +3,7 @@ import { Header } from "./components/Header";
 import { FilterBarSimple as FilterBar } from "./components/FilterBarSimple";
 import { EnvironmentSection } from "./components/EnvironmentSection";
 import { Footer } from "./components/Footer";
-import { fetchServices, type Service } from "./api/services";
+import { fetchServices, fetchSettings, type Service, type GlobalSettings } from "./api/services";
 
 // Removed mock data - using API instead
 
@@ -36,6 +36,7 @@ function saveFilters(environments: string[], projects: string[], tags: string[],
 
 export default function App() {
   const [services, setServices] = useState<Service[]>([]);
+  const [settings, setSettings] = useState<GlobalSettings>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,23 +48,27 @@ export default function App() {
   const [selectedProjects, setSelectedProjects] = useState<string[]>(savedFilters.projects || []);
   const [selectedTags, setSelectedTags] = useState<string[]>(savedFilters.tags || []);
 
-  // Fetch services from API
+  // Fetch services and settings from API
   useEffect(() => {
-    async function loadServices() {
+    async function loadData() {
       try {
         setLoading(true);
-        const data = await fetchServices();
-        setServices(data);
+        const [servicesData, settingsData] = await Promise.all([
+          fetchServices(),
+          fetchSettings(),
+        ]);
+        setServices(servicesData);
+        setSettings(settingsData);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load services');
-        console.error('Failed to fetch services:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load data');
+        console.error('Failed to fetch data:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    loadServices();
+    loadData();
   }, []);
 
   // Save filters to localStorage whenever they change
@@ -267,6 +272,7 @@ export default function App() {
                 environment={groupKey}
                 services={groupedServices[groupKey]}
                 selectedEnvironments={selectedEnvironments}
+                environmentStyles={settings.environment_styles}
                 color="primary"
               />
             ))

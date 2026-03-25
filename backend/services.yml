@@ -8,6 +8,23 @@ settings:
     enabled: true
     interval: 300
     timeout: 5
+  
+  # Custom environment styles (optional)
+  # Override default colors and icons for environment names
+  environment_styles:
+    production:
+      color: red      # red, amber, green, blue, purple, gray, indigo, pink, cyan
+      icon: server    # server, flask, laptop, cloud, zap, globe, shield, code
+    staging:
+      color: amber
+      icon: flask
+    dev:
+      color: green
+      icon: laptop
+    # Custom environment example
+    # demo:
+    #   color: blue
+    #   icon: cloud
 
 # Service definitions
 services:

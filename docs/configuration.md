@@ -63,6 +63,20 @@ settings:
     enabled: true            # Enable health checks globally
     interval: 300            # Check interval in seconds
     timeout: 5               # Request timeout in seconds
+  environment_styles:        # Custom environment colors and icons (optional)
+    production:
+      color: red             # Color variant
+      icon: server           # Icon name
+    staging:
+      color: amber
+      icon: flask
+    development:
+      color: green
+      icon: laptop
+    # Custom environments
+    demo:
+      color: blue
+      icon: cloud
 ```
 
 **Settings:**
@@ -71,6 +85,52 @@ settings:
 - `health_check.enabled`: Enable/disable health checks globally
 - `health_check.interval`: How often to perform health checks
 - `health_check.timeout`: HTTP request timeout for health checks
+- `environment_styles`: Custom colors and icons for environment badges (optional)
+
+**Environment Styles:**
+
+Customize how environment badges appear in the UI. This is completely optional - if not specified, sensible defaults are used (production=red, staging=amber, dev=green).
+
+**Available Colors:**
+- `red` - Critical/production environments
+- `amber` - Warning/staging environments  
+- `green` - Safe/development environments
+- `blue` - Information/demo environments
+- `purple`, `indigo`, `pink`, `cyan` - Custom environments
+- `gray` - Neutral/default
+
+**Available Icons:**
+- `server` - Production servers
+- `flask` - Testing/staging environments
+- `laptop` - Development/local environments
+- `cloud` - Cloud/demo environments
+- `zap` - Fast/performance environments
+- `globe` - Public/external environments
+- `shield` - Secure/protected environments
+- `code` - Development/coding environments
+
+**Example:**
+```yaml
+settings:
+  environment_styles:
+    production:
+      color: red
+      icon: server
+    staging:
+      color: amber
+      icon: flask
+    qa:
+      color: blue
+      icon: shield
+    demo:
+      color: cyan
+      icon: cloud
+    local:
+      color: green
+      icon: laptop
+```
+
+Environment names are matched **case-insensitively**. Both `Production` and `production` will use the same style.
 
 ### Service Definition
 

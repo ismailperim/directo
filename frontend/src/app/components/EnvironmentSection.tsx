@@ -22,11 +22,17 @@ interface Service {
   icon: string;
 }
 
+interface EnvironmentStyle {
+  color: 'red' | 'amber' | 'green' | 'blue' | 'purple' | 'gray' | 'indigo' | 'pink' | 'cyan';
+  icon: 'server' | 'flask' | 'laptop' | 'cloud' | 'zap' | 'globe' | 'shield' | 'code';
+}
+
 interface EnvironmentSectionProps {
   environment: string;
   services: Service[];
   color: string;
   selectedEnvironments?: string[];
+  environmentStyles?: Record<string, EnvironmentStyle>;
 }
 
 const colorMap: Record<string, string> = {
@@ -40,6 +46,7 @@ export function EnvironmentSection({
   services,
   color,
   selectedEnvironments = [],
+  environmentStyles,
 }: EnvironmentSectionProps) {
   const colorClass = colorMap[environment.toLowerCase()] || colorMap.dev;
 
@@ -69,7 +76,12 @@ export function EnvironmentSection({
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {services.map((service) => (
-          <ServiceCard key={service.id} service={service} selectedEnvironments={selectedEnvironments} />
+          <ServiceCard 
+            key={service.id} 
+            service={service} 
+            selectedEnvironments={selectedEnvironments}
+            environmentStyles={environmentStyles}
+          />
         ))}
       </div>
     </motion.div>

@@ -51,9 +51,15 @@ export interface CustomGroup {
   services: string[];
 }
 
+export interface EnvironmentStyle {
+  color: 'red' | 'amber' | 'green' | 'blue' | 'purple' | 'gray' | 'indigo' | 'pink' | 'cyan';
+  icon: 'server' | 'flask' | 'laptop' | 'cloud' | 'zap' | 'globe' | 'shield' | 'code';
+}
+
 export interface GlobalSettings {
   default_view?: 'environment' | 'project' | 'team' | 'category' | 'custom';
   theme?: 'light' | 'dark' | 'auto';
+  environment_styles?: Record<string, EnvironmentStyle>;
   health_check?: {
     enabled?: boolean;
     interval?: number;

@@ -25,6 +25,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GitHub icon appears in top-right corner of cards when repository URL is configured
   - One-click access to service source code from dashboard
   - Supports any Git hosting platform URL (GitHub, GitLab, Bitbucket, etc.)
+- **Health Check Authentication**: Support for basic auth and custom headers in health checks
+  - Basic authentication with username/password (automatic Base64 encoding)
+  - Custom headers support for API keys, bearer tokens, etc.
+  - Auth credentials never exposed in API responses (security-first design)
+  - See configuration docs for examples
+- **Customizable Environment Styles**: YAML-based environment badge customization
+  - Define custom colors and icons for any environment name
+  - 9 color options: red, amber, green, blue, purple, gray, indigo, pink, cyan
+  - 8 icon options: server, flask, laptop, cloud, zap, globe, shield, code
+  - Sensible defaults (production=red/server, staging=amber/flask, dev=green/laptop)
+  - Case-insensitive environment name matching
+  - Modern colored badges with icons in service cards
 
 ### Changed
 - **View Mode Redesign**: Replaced "By Environment" with "All Services" view
