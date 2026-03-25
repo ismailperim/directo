@@ -60,7 +60,7 @@ export function FilterBarSimple({
   }, []);
 
   return (
-    <div className="border-b border-border bg-card/30 backdrop-blur-sm">
+    <div className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-40">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -86,7 +86,7 @@ export function FilterBarSimple({
             </Button>
             
             {envDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-50">
+              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-[100]">
                 <div className="text-sm font-semibold px-2 py-1.5 text-foreground">
                   Select Environments
                 </div>
@@ -127,7 +127,7 @@ export function FilterBarSimple({
             </Button>
             
             {projectDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-50">
+              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-[100]">
                 <div className="text-sm font-semibold px-2 py-1.5 text-foreground">
                   Select Projects
                 </div>
@@ -168,7 +168,7 @@ export function FilterBarSimple({
             </Button>
             
             {tagDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-50 max-h-[300px] overflow-y-auto">
+              <div className="absolute top-full left-0 mt-2 bg-popover border border-border rounded-md shadow-lg p-2 min-w-[200px] z-[100] max-h-[300px] overflow-y-auto">
                 <div className="text-sm font-semibold px-2 py-1.5 text-foreground">
                   Select Tags
                 </div>
