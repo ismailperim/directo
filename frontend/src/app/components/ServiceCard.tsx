@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { motion } from "motion/react";
@@ -22,6 +22,7 @@ interface Service {
   tags: string[];
   environments: ServiceEnvironment[];
   icon: string;
+  repository?: string;
 }
 
 interface ServiceCardProps {
@@ -41,7 +42,20 @@ export function ServiceCard({ service, selectedEnvironments = [] }: ServiceCardP
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full">
+      <Card className="group hover:shadow-lg transition-all duration-300 hover:border-primary/50 h-full relative">
+        {/* GitHub Repository Link */}
+        {service.repository && (
+          <a
+            href={service.repository}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute top-3 right-3 p-1.5 rounded-md hover:bg-accent transition-colors group/repo"
+            title="View Repository"
+          >
+            <Github className="w-4 h-4 text-muted-foreground group-hover/repo:text-primary transition-colors" />
+          </a>
+        )}
+        
         <CardHeader className="pb-3">
           <div className="flex items-start gap-2.5">
             <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors text-lg">

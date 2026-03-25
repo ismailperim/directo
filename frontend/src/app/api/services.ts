@@ -17,6 +17,7 @@ export interface Service {
   project: string;
   group: string;
   icon: string;
+  repository?: string;
   environments: ServiceEnvironment[];
 }
 

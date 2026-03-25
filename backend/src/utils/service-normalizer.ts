@@ -19,6 +19,7 @@ export interface NormalizedService {
   project: string;
   group: string;
   icon: string;
+  repository?: string;
   environments: ServiceEnvironment[];
 }
 
@@ -55,6 +56,7 @@ export function normalizeServices(services: Service[]): NormalizedService[] {
       project: service.team || 'Unknown',
       group: getGroupFromTags(service.tags || []),
       icon: service.icon || '🔗',
+      repository: service.repository,
       environments,
     });
   }
