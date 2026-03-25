@@ -21,7 +21,12 @@ export interface ServicesResponse {
   count: number;
 }
 
-const API_BASE = import.meta.env.PROD ? '' : 'http://localhost:3000';
+// Dynamic API base URL: works for localhost and network access
+// In dev mode, uses Vite proxy (no explicit URL needed)
+// In production, backend serves frontend from same origin
+const API_BASE = import.meta.env.PROD 
+  ? '' 
+  : '';
 
 export async function fetchServices(): Promise<Service[]> {
   const response = await fetch(`${API_BASE}/api/services`);

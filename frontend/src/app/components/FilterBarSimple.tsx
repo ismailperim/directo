@@ -1,7 +1,7 @@
 import { Filter, X, ChevronDown } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface FilterBarProps {
   selectedEnvironments: string[];
@@ -32,8 +32,32 @@ export function FilterBarSimple({
   const [projectDropdownOpen, setProjectDropdownOpen] = useState(false);
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false);
   
+  const envDropdownRef = useRef<HTMLDivElement>(null);
+  const projectDropdownRef = useRef<HTMLDivElement>(null);
+  const tagDropdownRef = useRef<HTMLDivElement>(null);
+  
   const hasActiveFilters =
     selectedEnvironments.length > 0 || selectedProjects.length > 0 || selectedTags.length > 0;
+
+  // Click outside to close dropdowns
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (envDropdownRef.current && !envDropdownRef.current.contains(event.target as Node)) {
+        setEnvDropdownOpen(false);
+      }
+      if (projectDropdownRef.current && !projectDropdownRef.current.contains(event.target as Node)) {
+        setProjectDropdownOpen(false);
+      }
+      if (tagDropdownRef.current && !tagDropdownRef.current.contains(event.target as Node)) {
+        setTagDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="border-b border-border bg-card/30 backdrop-blur-sm">
@@ -45,7 +69,7 @@ export function FilterBarSimple({
           </div>
 
           {/* Environment Filter */}
-          <div className="relative">
+          <div className="relative" ref={envDropdownRef}>
             <Button
               variant="outline"
               size="sm"
@@ -86,7 +110,7 @@ export function FilterBarSimple({
           </div>
 
           {/* Project Filter */}
-          <div className="relative">
+          <div className="relative" ref={projectDropdownRef}>
             <Button
               variant="outline"
               size="sm"
@@ -127,7 +151,7 @@ export function FilterBarSimple({
           </div>
 
           {/* Tag Filter */}
-          <div className="relative">
+          <div className="relative" ref={tagDropdownRef}>
             <Button
               variant="outline"
               size="sm"
@@ -230,17 +254,7 @@ export function FilterBarSimple({
         </div>
       </div>
       
-      {/* Click outside to close dropdowns */}
-      {(envDropdownOpen || projectDropdownOpen || tagDropdownOpen) && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => {
-            setEnvDropdownOpen(false);
-            setProjectDropdownOpen(false);
-            setTagDropdownOpen(false);
-          }}
-        />
-      )}
+
     </div>
   );
 }

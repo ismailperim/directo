@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import { logger } from './utils/logger';
 import { healthRouter } from './api/health';
@@ -27,6 +28,12 @@ try {
 }
 
 // Middleware
+// CORS: Allow all origins in development, restrict in production
+const corsOptions = process.env.NODE_ENV === 'production'
+  ? { origin: false } // Disable CORS in production (same-origin only)
+  : { origin: true }; // Allow all origins in development
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Request logging
